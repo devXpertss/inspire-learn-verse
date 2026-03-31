@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { SearchBar } from "./SearchBar";
 import { motion } from "framer-motion";
-import { BookOpen, Code, Brain, Settings, Menu, X } from "lucide-react";
+import { BookOpen, Code, Brain, Settings, Menu, X, Mail } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
@@ -9,6 +10,7 @@ const navItems = [
   { path: "/subjects", label: "Subjects", icon: BookOpen },
   { path: "/playground", label: "Playground", icon: Code },
   { path: "/quiz", label: "Quiz", icon: Brain },
+  { path: "/contact", label: "Contact", icon: Mail },
   { path: "/admin", label: "Admin", icon: Settings },
 ];
 
@@ -24,9 +26,11 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-            <Code className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <img
+            src="https://i.postimg.cc/YhzcMz8R/logo.png"
+            alt="CodeSpire Logo"
+            className="w-8 h-8 rounded-lg object-cover"
+          />
           <span className="font-heading text-xl font-bold text-gradient">CodeSpire</span>
         </Link>
 
@@ -61,6 +65,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <SearchBar />
           <ThemeToggle />
           <button
             className="md:hidden p-2 rounded-lg text-foreground"

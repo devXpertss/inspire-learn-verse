@@ -13,6 +13,7 @@ import TopicDetailPage from "./pages/TopicDetailPage";
 import PlaygroundPage from "./pages/PlaygroundPage";
 import QuizPage from "./pages/QuizPage";
 import AdminPage from "./pages/AdminPage";
+import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/quiz" element={<QuizPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
