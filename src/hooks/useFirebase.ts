@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { db, ref, onValue, get } from "@/lib/firebase";
-import type { Subject, Unit, Topic, Note, Quiz } from "@/lib/types";
+import { db, ref, onValue } from "@/lib/firebase";
+import type { Subject, Quiz, Presentation, SiteContent } from "@/lib/types";
 
 export function useFirebaseData<T>(path: string) {
   const [data, setData] = useState<T | null>(null);
@@ -33,4 +33,12 @@ export function useSubjects() {
 
 export function useQuizzes() {
   return useFirebaseData<Record<string, Quiz>>("quizzes");
+}
+
+export function usePresentations() {
+  return useFirebaseData<Record<string, Presentation>>("presentations");
+}
+
+export function useSiteContent() {
+  return useFirebaseData<SiteContent>("siteContent");
 }

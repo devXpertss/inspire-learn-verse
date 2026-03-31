@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, X, BookOpen, FileText, Brain, ArrowRight } from "lucide-react";
+import { Search, X, BookOpen, FileText, Brain, ArrowRight, Presentation, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useSubjects, useQuizzes } from "@/hooks/useFirebase";
+import { useSubjects, useQuizzes, usePresentations, useSiteContent } from "@/hooks/useFirebase";
+import { defaultSiteContent } from "@/lib/defaultSiteContent";
 
 interface SearchResult {
-  type: "subject" | "unit" | "topic" | "note" | "quiz";
+  type: "subject" | "unit" | "topic" | "note" | "quiz" | "presentation" | "page" | "contact";
   title: string;
   description: string;
   path: string;
@@ -19,6 +20,9 @@ export function SearchBar() {
   const navigate = useNavigate();
   const { data: subjects } = useSubjects();
   const { data: quizzes } = useQuizzes();
+  const { data: presentations } = usePresentations();
+  const { data: siteContentData } = useSiteContent();
+  const siteContent = siteContentData ?? defaultSiteContent;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -81,8 +85,37 @@ export function SearchBar() {
       });
     }
 
+    if (presentations) {
+      Object.entries(presentations).forEach(([key, presentation]) => {
+        if (
+          presentation.title.toLowerCase().includes(q)
+          || presentation.description?.toLowerCase().includes(q)
+          || presentation.category?.toLowerCase().includes(q)
+        ) {
+          res.push({
+            type: "presentation",
+            title: presentation.title,
+            description: presentation.description || presentation.category || "Presentation",
+            path: `/presentations#${key}`,
+          });
+        }
+      });
+    }
+
+    siteContent.navigation.items.forEach((item) => {
+      if (item.label.toLowerCase().includes(q)) {
+        res.push({ type: "page", title: item.label, description: "Website page", path: item.path });
+      }
+    });
+
+    (siteContent.contact.infoCards || []).forEach((card: { label: string; value: string }) => {
+      if (card.label.toLowerCase().includes(q) || card.value.toLowerCase().includes(q)) {
+        res.push({ type: "contact", title: card.label, description: card.value, path: "/contact" });
+      }
+    });
+
     setResults(res.slice(0, 8));
-  }, [query, subjects, quizzes]);
+  }, [query, subjects, quizzes, presentations, siteContent]);
 
   const handleSelect = (path: string) => {
     navigate(path);
@@ -96,6 +129,9 @@ export function SearchBar() {
     topic: FileText,
     note: FileText,
     quiz: Brain,
+    presentation: Presentation,
+    page: BookOpen,
+    contact: Mail,
   };
 
   return (
@@ -105,7 +141,7 @@ export function SearchBar() {
         className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-muted/50 text-muted-foreground text-sm hover:border-primary/50 transition-colors"
       >
         <Search className="w-3.5 h-3.5" />
-        <span className="hidden sm:inline">Search...</span>
+        <span className="hidden sm:inline">{siteContent.search.buttonLabel}</span>
         <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border border-border bg-muted px-1.5 text-[10px] font-mono text-muted-foreground">
           ⌘K
         </kbd>
@@ -134,7 +170,7 @@ export function SearchBar() {
                     ref={inputRef}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search subjects, topics, notes, quizzes..."
+                    placeholder={siteContent.navigation.searchPlaceholder}
                     className="flex-1 bg-transparent text-foreground text-sm outline-none placeholder:text-muted-foreground"
                   />
                   {query && (
@@ -170,13 +206,13 @@ export function SearchBar() {
 
                 {query && results.length === 0 && (
                   <div className="py-8 text-center text-sm text-muted-foreground">
-                    No results found for "{query}"
+                    {siteContent.search.noResultsPrefix} "{query}"
                   </div>
                 )}
 
                 {!query && (
                   <div className="py-8 text-center text-sm text-muted-foreground">
-                    Start typing to search across all content
+                    {siteContent.search.emptyQuery}
                   </div>
                 )}
               </div>

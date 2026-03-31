@@ -12,6 +12,18 @@ export interface Slide {
   image?: string;
 }
 
+export interface Presentation {
+  id?: string;
+  title: string;
+  description: string;
+  category?: string;
+  image?: string;
+  thumbnail?: string;
+  embedUrl?: string;
+  fileUrl?: string;
+  slides?: Slide[];
+}
+
 export interface Topic {
   id: string;
   name: string;
@@ -53,4 +65,25 @@ export interface Quiz {
 export interface FirebaseData {
   subjects: Record<string, Subject>;
   quizzes: Record<string, Quiz>;
+  presentations?: Record<string, Presentation>;
+  siteContent?: SiteContent;
+}
+
+export interface SiteContent {
+  brand: Record<string, string>;
+  navigation: {
+    items: Array<{ path: string; label: string }>;
+    searchPlaceholder: string;
+  };
+  footer: {
+    description: string;
+    copyright: string;
+    learnLinks: Array<{ label: string; path: string }>;
+    connectLinks: Array<{ label: string; path: string; external?: boolean }>;
+    resourceLinks: Array<{ label: string; path: string; external?: boolean }>;
+  };
+  home: Record<string, any>;
+  pages: Record<string, any>;
+  contact: Record<string, any>;
+  search: Record<string, string>;
 }

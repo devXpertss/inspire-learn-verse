@@ -4,9 +4,14 @@ import { Link } from "react-router-dom";
 import { BookOpen, ChevronRight, Layers, GraduationCap } from "lucide-react";
 import { FloatingShape, GridPattern, FloatingParticles } from "@/components/FloatingElements";
 import { SkeletonList } from "@/components/SkeletonCard";
+import { useSiteContent } from "@/hooks/useFirebase";
+import { defaultSiteContent } from "@/lib/defaultSiteContent";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export default function SubjectsPage() {
   const { data: subjects, loading, error } = useSubjects();
+  const { data: siteContentData } = useSiteContent();
+  const content = (siteContentData ?? defaultSiteContent).pages.subjects;
 
   const subjectList = subjects ? Object.entries(subjects) : [];
 
@@ -29,13 +34,13 @@ export default function SubjectsPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-6"
             >
               <GraduationCap className="w-4 h-4" />
-              Browse All Courses
+              {content.badge}
             </motion.div>
             <h1 className="text-5xl md:text-7xl font-bold font-heading mb-4">
-              <span className="text-gradient">Subjects</span>
+              <span className="text-gradient">{content.title}</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              Choose a subject to dive deep into structured learning with notes, presentations, and quizzes
+              {content.description}
             </p>
           </motion.div>
 
@@ -43,14 +48,14 @@ export default function SubjectsPage() {
             <SkeletonList count={6} />
           ) : error ? (
             <div className="text-center py-20">
-              <p className="text-muted-foreground">Failed to load subjects. Make sure Firebase data is uploaded.</p>
+              <p className="text-muted-foreground">{content.error}</p>
             </div>
           ) : subjectList.length === 0 ? (
             <div className="text-center py-20">
               <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
-              <h3 className="text-lg font-heading font-semibold mb-2">No Subjects Yet</h3>
+              <h3 className="text-lg font-heading font-semibold mb-2">{content.emptyTitle}</h3>
               <p className="text-muted-foreground text-sm">
-                Upload the JSON data to your Firebase Realtime Database to see subjects here.
+                {content.emptyDescription}
               </p>
             </div>
           ) : (
@@ -88,7 +93,7 @@ export default function SubjectsPage() {
                         </span>
                       </div>
                       <div className="flex items-center text-sm text-primary font-medium">
-                        Explore Subject
+                        {content.exploreLabel}
                         <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </Link>
@@ -100,12 +105,7 @@ export default function SubjectsPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 mt-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 CodeSpire. Built with passion for learning.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
