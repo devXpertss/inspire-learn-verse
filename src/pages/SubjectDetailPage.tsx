@@ -5,10 +5,15 @@ import { ChevronRight, ArrowLeft, Layers, BookOpen } from "lucide-react";
 import type { Subject } from "@/lib/types";
 import { FloatingShape, GridPattern } from "@/components/FloatingElements";
 import { SkeletonList } from "@/components/SkeletonCard";
+import { useSiteContent } from "@/hooks/useFirebase";
+import { defaultSiteContent } from "@/lib/defaultSiteContent";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export default function SubjectDetailPage() {
   const { subjectId } = useParams();
   const { data: subject, loading } = useFirebaseData<Subject>(`subjects/${subjectId}`);
+  const { data: siteContentData } = useSiteContent();
+  const content = (siteContentData ?? defaultSiteContent).pages.subjectDetail;
 
   if (loading) {
     return (
@@ -23,7 +28,7 @@ export default function SubjectDetailPage() {
   if (!subject) {
     return (
       <div className="min-h-screen pt-24 flex items-center justify-center">
-        <p className="text-muted-foreground">Subject not found.</p>
+        <p className="text-muted-foreground">{content.notFound}</p>
       </div>
     );
   }
@@ -39,7 +44,7 @@ export default function SubjectDetailPage() {
 
         <div className="container mx-auto px-4 relative z-10">
           <Link to="/subjects" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to Subjects
+            <ArrowLeft className="w-4 h-4" /> {content.backLabel}
           </Link>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
@@ -53,10 +58,10 @@ export default function SubjectDetailPage() {
             </div>
           </motion.div>
 
-          <h2 className="text-2xl font-heading font-semibold mb-8">Units</h2>
+          <h2 className="text-2xl font-heading font-semibold mb-8">{content.unitsTitle}</h2>
 
           {units.length === 0 ? (
-            <p className="text-muted-foreground">No units available.</p>
+            <p className="text-muted-foreground">{content.empty}</p>
           ) : (
             <div className="space-y-4">
               {units.map(([key, unit], i) => {
@@ -94,11 +99,7 @@ export default function SubjectDetailPage() {
         </div>
       </section>
 
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 CodeSpire. Built with passion for learning.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

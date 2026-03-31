@@ -5,6 +5,10 @@ import { Play, Loader2, RotateCcw, Code, Terminal, Copy, Check, Maximize2, Minim
 import { Button } from "@/components/ui/button";
 import { FloatingShape, GridPattern } from "@/components/FloatingElements";
 import { Skeleton } from "@/components/ui/skeleton";
+import { runPlaygroundCode } from "@/lib/playgroundRuntime";
+import { useSiteContent } from "@/hooks/useFirebase";
+import { defaultSiteContent } from "@/lib/defaultSiteContent";
+import { SiteFooter } from "@/components/SiteFooter";
 
 const languageDefaults: Record<string, { code: string; lang: string; icon: string }> = {
   python: {
@@ -66,12 +70,10 @@ SELECT COUNT(*) as total_students FROM students;`,
   },
 };
 
-const PISTON_API = "https://emkc.org/api/v2/piston/execute";
-
 const languageVersions: Record<string, { language: string; version: string }> = {
-  python: { language: "python", version: "3.10.0" },
-  c: { language: "c", version: "10.2.0" },
-  sql: { language: "sqlite3", version: "3.36.0" },
+  python: { language: "python", version: "Local WASM" },
+  c: { language: "c", version: "Browser Clang" },
+  sql: { language: "sqlite3", version: "SQL.js" },
 };
 
 export default function PlaygroundPage() {
@@ -82,6 +84,8 @@ export default function PlaygroundPage() {
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [editorLoaded, setEditorLoaded] = useState(false);
+  const { data: siteContentData } = useSiteContent();
+  const content = (siteContentData ?? defaultSiteContent).pages.playground;
 
   const handleLangChange = (lang: string) => {
     setSelectedLang(lang);
@@ -92,30 +96,15 @@ export default function PlaygroundPage() {
 
   const handleRun = useCallback(async () => {
     setRunning(true);
-    setOutput("");
+    setOutput(content.initializingMessage);
     try {
-      const config = languageVersions[selectedLang];
-      const res = await fetch(PISTON_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          language: config.language,
-          version: config.version,
-          files: [{ content: code }],
-        }),
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error: ${res.status}`);
-      }
-      const data = await res.json();
-      const runOutput = data.run?.output || data.run?.stderr || "";
-      const compileOutput = data.compile?.stderr || "";
-      setOutput(compileOutput ? `Compile Error:\n${compileOutput}` : runOutput || "Program executed successfully (no output)");
+      const result = await runPlaygroundCode(selectedLang, code);
+      setOutput(result);
     } catch (err: any) {
-      setOutput(`Error: ${err.message || "Could not connect to the execution server. Please try again."}`);
+      setOutput(`Error: ${err.message || content.executionError}`);
     }
     setRunning(false);
-  }, [selectedLang, code]);
+  }, [selectedLang, code, content]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -139,11 +128,14 @@ export default function PlaygroundPage() {
               </div>
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold font-heading">
-                  <span className="text-gradient">Code Playground</span>
+                  <span className="text-gradient">{content.title}</span>
                 </h1>
-                <p className="text-muted-foreground">Write, run, and experiment with code in real-time</p>
+                <p className="text-muted-foreground">{content.description}</p>
               </div>
             </div>
+            <p className="text-sm text-primary bg-secondary border border-border rounded-xl px-4 py-3 max-w-3xl">
+              {content.localNotice}
+            </p>
           </motion.div>
 
           {/* Language Tabs */}
@@ -192,7 +184,7 @@ export default function PlaygroundPage() {
                     className="bg-gradient-primary text-primary-foreground hover:opacity-90 h-8 px-4"
                   >
                     {running ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Play className="w-4 h-4 mr-1" />}
-                    Run
+                    {content.runLabel}
                   </Button>
                 </div>
               </div>
@@ -234,11 +226,11 @@ export default function PlaygroundPage() {
               <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-muted/50">
                 <div className="flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground font-medium">Output</span>
+                  <span className="text-sm text-muted-foreground font-medium">{content.outputTitle}</span>
                 </div>
                 {running && (
                   <span className="flex items-center gap-1.5 text-xs text-primary">
-                    <Loader2 className="w-3 h-3 animate-spin" /> Running...
+                    <Loader2 className="w-3 h-3 animate-spin" /> {content.runningLabel}
                   </span>
                 )}
               </div>
@@ -247,7 +239,7 @@ export default function PlaygroundPage() {
                   <span className="text-foreground">{output}</span>
                 ) : (
                   <span className="text-muted-foreground">
-                    {running ? "Executing your code..." : "Click 'Run' to execute your code and see output here..."}
+                    {running ? content.runningOutput : content.emptyOutput}
                   </span>
                 )}
               </pre>
@@ -278,12 +270,7 @@ export default function PlaygroundPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 mt-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 CodeSpire. Powered by Piston API for code execution.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

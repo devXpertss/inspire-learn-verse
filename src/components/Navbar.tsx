@@ -2,21 +2,28 @@ import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { SearchBar } from "./SearchBar";
 import { motion } from "framer-motion";
-import { BookOpen, Code, Brain, Settings, Menu, X, Mail } from "lucide-react";
+import { BookOpen, Code, Brain, Settings, Menu, X, Mail, Presentation } from "lucide-react";
 import { useState } from "react";
+import { useSiteContent } from "@/hooks/useFirebase";
+import { defaultSiteContent } from "@/lib/defaultSiteContent";
 
-const navItems = [
-  { path: "/", label: "Home", icon: BookOpen },
-  { path: "/subjects", label: "Subjects", icon: BookOpen },
-  { path: "/playground", label: "Playground", icon: Code },
-  { path: "/quiz", label: "Quiz", icon: Brain },
-  { path: "/contact", label: "Contact", icon: Mail },
-  { path: "/admin", label: "Admin", icon: Settings },
-];
+const iconMap = {
+  "/": BookOpen,
+  "/subjects": BookOpen,
+  "/playground": Code,
+  "/presentations": Presentation,
+  "/quiz": Brain,
+  "/contact": Mail,
+  "/admin": Settings,
+};
 
 export function Navbar() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: siteContentData } = useSiteContent();
+  const siteContent = siteContentData ?? defaultSiteContent;
+  const navItems = siteContent.navigation.items;
+  const brand = siteContent.brand;
 
   return (
     <motion.nav
@@ -27,17 +34,18 @@ export function Navbar() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img
-            src="https://i.postimg.cc/YhzcMz8R/logo.png"
-            alt="CodeSpire Logo"
+            src={brand.logoUrl}
+            alt={brand.logoAlt}
             className="w-8 h-8 rounded-lg object-cover"
           />
-          <span className="font-heading text-xl font-bold text-gradient">CodeSpire</span>
+          <span className="font-heading text-xl font-bold text-gradient">{brand.name}</span>
         </Link>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
+            const Icon = iconMap[item.path as keyof typeof iconMap] ?? BookOpen;
             return (
               <Link
                 key={item.path}
@@ -56,7 +64,7 @@ export function Navbar() {
                   />
                 )}
                 <span className="relative flex items-center gap-1.5">
-                  <item.icon className="w-4 h-4" />
+                  <Icon className="w-4 h-4" />
                   {item.label}
                 </span>
               </Link>
@@ -86,19 +94,24 @@ export function Navbar() {
         >
           <div className="container mx-auto px-4 py-4 flex flex-col gap-1">
             {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                  location.pathname === item.path
-                    ? "bg-secondary text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                <item.icon className="w-4 h-4" />
-                {item.label}
-              </Link>
+              (() => {
+                const Icon = iconMap[item.path as keyof typeof iconMap] ?? BookOpen;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                      location.pathname === item.path
+                        ? "bg-secondary text-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
+                );
+              })()
             ))}
           </div>
         </motion.div>

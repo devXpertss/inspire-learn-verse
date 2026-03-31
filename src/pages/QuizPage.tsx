@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button";
 import type { Quiz, QuizQuestion } from "@/lib/types";
 import { FloatingShape, GridPattern, FloatingParticles } from "@/components/FloatingElements";
 import { SkeletonList } from "@/components/SkeletonCard";
+import { useSiteContent } from "@/hooks/useFirebase";
+import { defaultSiteContent } from "@/lib/defaultSiteContent";
+import { SiteFooter } from "@/components/SiteFooter";
 
-function QuizRunner({ quiz }: { quiz: Quiz }) {
+function QuizRunner({ quiz, content }: { quiz: Quiz; content: Record<string, string> }) {
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -50,13 +53,13 @@ function QuizRunner({ quiz }: { quiz: Quiz }) {
         </div>
         <div className="text-7xl font-bold text-gradient font-heading mb-3">{pct}%</div>
         <p className="text-lg text-muted-foreground mb-2">
-          You scored {score} out of {quiz.questions.length}
+          {content.resultsPrefix} {score} / {quiz.questions.length}
         </p>
         <p className="text-sm text-muted-foreground mb-8">
           {pct >= 80 ? "Excellent work! 🎉" : pct >= 50 ? "Good effort! Keep practicing." : "Keep studying and try again!"}
         </p>
         <Button onClick={handleRestart} variant="outline" size="lg">
-          <RotateCcw className="w-4 h-4 mr-2" /> Retry Quiz
+          <RotateCcw className="w-4 h-4 mr-2" /> {content.retryLabel}
         </Button>
       </motion.div>
     );
@@ -65,9 +68,9 @@ function QuizRunner({ quiz }: { quiz: Quiz }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <span className="text-sm text-muted-foreground">Question {currentQ + 1} of {quiz.questions.length}</span>
+        <span className="text-sm text-muted-foreground">{content.questionLabel} {currentQ + 1} / {quiz.questions.length}</span>
         <span className="text-sm font-medium text-primary flex items-center gap-1">
-          <Target className="w-4 h-4" /> Score: {score}
+          <Target className="w-4 h-4" /> {content.scoreLabel}: {score}
         </span>
       </div>
 
@@ -114,14 +117,14 @@ function QuizRunner({ quiz }: { quiz: Quiz }) {
           {showResult && question.explanation && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-secondary border border-border mb-6">
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Explanation:</span> {question.explanation}
+                <span className="font-semibold text-foreground">{content.explanationLabel}:</span> {question.explanation}
               </p>
             </motion.div>
           )}
 
           {showResult && (
             <Button onClick={handleNext} className="bg-gradient-primary text-primary-foreground hover:opacity-90">
-              {currentQ + 1 >= quiz.questions.length ? "See Results" : "Next Question"}
+              {currentQ + 1 >= quiz.questions.length ? content.seeResultsLabel : content.nextLabel}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           )}
@@ -135,6 +138,8 @@ export default function QuizPage() {
   const { data: quizzes, loading } = useQuizzes();
   const { data: subjects } = useSubjects();
   const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
+  const { data: siteContentData } = useSiteContent();
+  const content = (siteContentData ?? defaultSiteContent).pages.quiz;
 
   return (
     <div className="min-h-screen pt-16">
@@ -153,13 +158,13 @@ export default function QuizPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-6"
             >
               <Brain className="w-4 h-4" />
-              Test Your Knowledge
+              {content.badge}
             </motion.div>
             <h1 className="text-5xl md:text-6xl font-bold font-heading mb-4">
-              <span className="text-gradient">Quizzes</span>
+              <span className="text-gradient">{content.title}</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              Challenge yourself with interactive quizzes and track your progress
+              {content.description}
             </p>
           </motion.div>
 
@@ -169,11 +174,11 @@ export default function QuizPage() {
                 onClick={() => setActiveQuiz(null)}
                 className="text-sm text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1"
               >
-                ← Back to quizzes
+                ← {content.backLabel}
               </button>
               <div className="rounded-2xl border border-border bg-gradient-card p-8 shadow-card">
                 <h2 className="text-2xl font-heading font-bold mb-6">{activeQuiz.title}</h2>
-                <QuizRunner quiz={activeQuiz} />
+                <QuizRunner quiz={activeQuiz} content={content} />
               </div>
             </div>
           ) : loading ? (
@@ -181,8 +186,8 @@ export default function QuizPage() {
           ) : !quizzes || Object.keys(quizzes).length === 0 ? (
             <div className="text-center py-20">
               <Brain className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
-              <h3 className="text-lg font-heading font-semibold mb-2">No Quizzes Yet</h3>
-              <p className="text-muted-foreground text-sm">Upload quiz data to Firebase to see quizzes here.</p>
+              <h3 className="text-lg font-heading font-semibold mb-2">{content.emptyTitle}</h3>
+              <p className="text-muted-foreground text-sm">{content.emptyDescription}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -218,11 +223,7 @@ export default function QuizPage() {
         </div>
       </section>
 
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 CodeSpire. Built with passion for learning.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

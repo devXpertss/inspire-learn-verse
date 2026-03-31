@@ -11,6 +11,7 @@ import SubjectDetailPage from "./pages/SubjectDetailPage";
 import UnitDetailPage from "./pages/UnitDetailPage";
 import TopicDetailPage from "./pages/TopicDetailPage";
 import PlaygroundPage from "./pages/PlaygroundPage";
+import PresentationsPage from "./pages/PresentationsPage";
 import QuizPage from "./pages/QuizPage";
 import AdminPage from "./pages/AdminPage";
 import ContactPage from "./pages/ContactPage";
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/subjects/:subjectId/units/:unitId" element={<UnitDetailPage />} />
             <Route path="/subjects/:subjectId/units/:unitId/topics/:topicId" element={<TopicDetailPage />} />
             <Route path="/playground" element={<PlaygroundPage />} />
+            <Route path="/presentations" element={<PresentationsPage />} />
             <Route path="/quiz" element={<QuizPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/contact" element={<ContactPage />} />

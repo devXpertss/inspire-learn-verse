@@ -1,0 +1,328 @@
+{
+  "siteContent": {
+    "brand": {
+      "name": "CodeSpire",
+      "logoUrl": "https://i.postimg.cc/YhzcMz8R/logo.png",
+      "logoAlt": "CodeSpire logo"
+    },
+    "navigation": {
+      "items": [
+        { "path": "/", "label": "Home" },
+        { "path": "/subjects", "label": "Subjects" },
+        { "path": "/presentations", "label": "Presentations" },
+        { "path": "/playground", "label": "Playground" },
+        { "path": "/quiz", "label": "Quiz" },
+        { "path": "/contact", "label": "Contact" },
+        { "path": "/admin", "label": "Admin" }
+      ],
+      "searchPlaceholder": "Search subjects, notes, presentations, quizzes, contact info..."
+    },
+    "footer": {
+      "description": "Your ultimate study companion for mastering programming.",
+      "copyright": "© 2026 CodeSpire. Built with passion for learning.",
+      "learnLinks": [
+        { "label": "Subjects", "path": "/subjects" },
+        { "label": "Presentations", "path": "/presentations" },
+        { "label": "Playground", "path": "/playground" },
+        { "label": "Quizzes", "path": "/quiz" }
+      ],
+      "connectLinks": [
+        { "label": "Contact", "path": "/contact" },
+        { "label": "Instagram", "path": "https://instagram.com/codespire", "external": true },
+        { "label": "GitHub", "path": "https://github.com/codespire", "external": true }
+      ],
+      "resourceLinks": [
+        { "label": "Admin", "path": "/admin" },
+        { "label": "Firebase JSON", "path": "/admin" }
+      ]
+    },
+    "home": {
+      "badge": "Your Ultimate Study Companion",
+      "titlePrefix": "Learn. Code.",
+      "titleAccent": "Inspire.",
+      "description": "Master programming with structured notes, a local code playground, separate presentations, and quizzes — all powered by Firebase content."
+    },
+    "pages": {
+      "subjects": {
+        "badge": "Browse All Courses",
+        "title": "Subjects",
+        "description": "Choose a subject to dive deep into structured learning with notes, presentations, and quizzes.",
+        "error": "Failed to load subjects. Make sure Firebase data is uploaded.",
+        "emptyTitle": "No Subjects Yet",
+        "emptyDescription": "Upload the JSON data to your Firebase Realtime Database to see subjects here.",
+        "exploreLabel": "Explore Subject"
+      },
+      "subjectDetail": {
+        "backLabel": "Back to Subjects",
+        "unitsTitle": "Units",
+        "empty": "No units available.",
+        "notFound": "Subject not found."
+      },
+      "unitDetail": {
+        "backLabel": "Back to Units",
+        "topicsTitle": "Topics",
+        "empty": "No topics available.",
+        "notesSuffix": "notes",
+        "viewNotesLabel": "View Notes",
+        "notFound": "Unit not found."
+      },
+      "topicDetail": {
+        "backLabel": "Back to Topics",
+        "notesTitle": "Notes",
+        "noNotes": "No text notes available.",
+        "selectTitle": "Select a note to view",
+        "selectDescription": "Choose a note from the sidebar to start reading.",
+        "downloadLabel": "Download TXT",
+        "presentationsNotice": "{count} presentation notes moved to the Presentations section",
+        "notFound": "Topic not found."
+      },
+      "presentations": {
+        "badge": "Visual Learning Library",
+        "title": "Presentations",
+        "description": "Browse live PPT embeds, thumbnails, and downloadable deck links in one separate section.",
+        "emptyTitle": "No Presentations Yet",
+        "emptyDescription": "Upload presentation JSON to Firebase to show decks here.",
+        "openLabel": "Open Presentation",
+        "viewerTitle": "Live Presentation Viewer",
+        "iframeTitle": "Presentation viewer",
+        "noEmbed": "Add an embedUrl or fileUrl in Firebase to show the live presentation here.",
+        "downloadFile": "Download Deck"
+      },
+      "playground": {
+        "title": "Code Playground",
+        "description": "Write, run, and experiment with code in real-time.",
+        "localNotice": "The playground now runs with browser/local runtimes instead of the old remote API, so the previous HTTP 401 issue is removed.",
+        "runLabel": "Run",
+        "outputTitle": "Output",
+        "runningLabel": "Running...",
+        "runningOutput": "Executing your code locally...",
+        "emptyOutput": "Click Run to execute your code and see output here...",
+        "executionError": "Could not execute your code.",
+        "initializingMessage": "Initializing runtime... the first run may take a little longer."
+      },
+      "quiz": {
+        "badge": "Test Your Knowledge",
+        "title": "Quizzes",
+        "description": "Challenge yourself with interactive quizzes and track your progress.",
+        "backLabel": "Back to quizzes",
+        "emptyTitle": "No Quizzes Yet",
+        "emptyDescription": "Upload quiz data to Firebase to see quizzes here.",
+        "scoreLabel": "Score",
+        "questionLabel": "Question",
+        "explanationLabel": "Explanation",
+        "retryLabel": "Retry Quiz",
+        "nextLabel": "Next Question",
+        "seeResultsLabel": "See Results",
+        "resultsPrefix": "You scored"
+      },
+      "notFound": {
+        "title": "404",
+        "description": "Oops! Page not found",
+        "linkLabel": "Return to Home"
+      }
+    },
+    "contact": {
+      "badge": "We'd love to hear from you",
+      "titlePrefix": "Get in",
+      "titleAccent": "Touch",
+      "description": "Have a question, suggestion, or want to collaborate? Reach out and we'll get back to you as soon as possible.",
+      "infoCards": [
+        { "icon": "Mail", "label": "Email", "value": "hello@codespire.dev", "href": "mailto:hello@codespire.dev" },
+        { "icon": "Phone", "label": "Phone", "value": "+1 (555) 123-4567", "href": "tel:+15551234567" },
+        { "icon": "MapPin", "label": "Location", "value": "San Francisco, CA", "href": "#" },
+        { "icon": "Globe", "label": "Website", "value": "codespire.dev", "href": "https://codespire.dev" }
+      ],
+      "formTitlePrefix": "Send us a",
+      "formTitleAccent": "Message",
+      "formDescription": "Fill out the form and we'll get back to you within 24 hours.",
+      "fields": {
+        "name": "Your Name",
+        "email": "Email",
+        "subject": "Subject",
+        "message": "Message"
+      },
+      "placeholders": {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "subject": "What's this about?",
+        "message": "Tell us more..."
+      },
+      "submitLabel": "Send Message",
+      "successTitle": "Message Sent!",
+      "successDescription": "Thank you for reaching out. We'll respond soon.",
+      "socialTitlePrefix": "Connect with",
+      "socialTitleAccent": "Us",
+      "socialDescription": "Follow us on social media for updates, tips, and community content.",
+      "socials": [
+        { "icon": "Instagram", "label": "Instagram", "href": "https://instagram.com/codespire", "handle": "@codespire" },
+        { "icon": "Twitter", "label": "Twitter", "href": "https://twitter.com/codespire", "handle": "@codespire" },
+        { "icon": "Github", "label": "GitHub", "href": "https://github.com/codespire", "handle": "codespire" },
+        { "icon": "Linkedin", "label": "LinkedIn", "href": "https://linkedin.com/company/codespire", "handle": "CodeSpire" }
+      ],
+      "faqTitle": "Frequently Asked Questions",
+      "faqDescription": "Find quick answers to common questions about CodeSpire.",
+      "faqs": ["Is CodeSpire free to use?", "How do I report a bug?", "Can I contribute content?"],
+      "ctaTitlePrefix": "Let's Build Something",
+      "ctaTitleAccent": "Amazing",
+      "ctaTitleSuffix": "Together",
+      "ctaDescription": "Whether you're a student, educator, or developer — we're here to help.",
+      "ctaPrimary": "Email Us",
+      "ctaSecondary": "Follow Us"
+    },
+    "search": {
+      "buttonLabel": "Search...",
+      "emptyQuery": "Start typing to search across all website content",
+      "noResultsPrefix": "No results found for"
+    }
+  },
+  "presentations": {
+    "python-intro-deck": {
+      "title": "Python Fundamentals Deck",
+      "description": "A beginner-friendly slide deck covering variables, loops, functions, and lists.",
+      "category": "Python",
+      "thumbnail": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "https://file-examples.com/storage/fe1d58d6b793102b664f645/2017/08/file_example_PPT_500kB.ppt",
+      "embedUrl": "https://view.officeapps.live.com/op/embed.aspx?src=https%3A%2F%2Ffile-examples.com%2Fstorage%2Ffe1d58d6b793102b664f645%2F2017%2F08%2Ffile_example_PPT_500kB.ppt"
+    },
+    "sql-reporting-deck": {
+      "title": "SQL Reporting Presentation",
+      "description": "Slides for SELECT queries, GROUP BY, aggregate functions, and filtering.",
+      "category": "SQL",
+      "thumbnail": "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "https://file-examples.com/storage/fe1d58d6b793102b664f645/2017/08/file_example_PPT_500kB.ppt",
+      "embedUrl": "https://view.officeapps.live.com/op/embed.aspx?src=https%3A%2F%2Ffile-examples.com%2Fstorage%2Ffe1d58d6b793102b664f645%2F2017%2F08%2Ffile_example_PPT_500kB.ppt"
+    }
+  },
+  "subjects": {
+    "python": {
+      "id": "python",
+      "name": "Python",
+      "description": "Learn Python from basics to problem solving.",
+      "icon": "🐍",
+      "color": "purple",
+      "units": {
+        "python-basics": {
+          "id": "python-basics",
+          "name": "Python Basics",
+          "description": "Start with syntax, variables, and control flow.",
+          "topics": {
+            "variables": {
+              "id": "variables",
+              "name": "Variables and Data Types",
+              "description": "Understand strings, numbers, and booleans.",
+              "notes": {
+                "python-vars-note": {
+                  "id": "python-vars-note",
+                  "title": "Python Variables",
+                  "content": "Python variables are created when you assign a value.\n\nExamples:\nname = 'CodeSpire'\nage = 2\nactive = True",
+                  "type": "text"
+                }
+              }
+            },
+            "loops": {
+              "id": "loops",
+              "name": "Loops",
+              "description": "Practice for loops and while loops.",
+              "notes": {
+                "python-loops-note": {
+                  "id": "python-loops-note",
+                  "title": "Python Loops",
+                  "content": "Use for loops to iterate over ranges and lists.\n\nExample:\nfor i in range(5):\n    print(i)",
+                  "type": "text"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "c-programming": {
+      "id": "c-programming",
+      "name": "C Programming",
+      "description": "Master syntax, memory basics, and structured programs in C.",
+      "icon": "⚡",
+      "color": "purple",
+      "units": {
+        "c-foundations": {
+          "id": "c-foundations",
+          "name": "C Foundations",
+          "description": "Understand the building blocks of C.",
+          "topics": {
+            "stdio": {
+              "id": "stdio",
+              "name": "Input and Output",
+              "description": "Learn printf and scanf basics.",
+              "notes": {
+                "c-stdio-note": {
+                  "id": "c-stdio-note",
+                  "title": "stdio.h Basics",
+                  "content": "The stdio.h header provides printf and scanf for basic I/O.\n\nExample:\n#include <stdio.h>\nint main(){ printf(\"Hello\\n\"); return 0; }",
+                  "type": "text"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sql": {
+      "id": "sql",
+      "name": "SQL",
+      "description": "Query, analyze, and organize data using SQL.",
+      "icon": "🗄️",
+      "color": "purple",
+      "units": {
+        "sql-core": {
+          "id": "sql-core",
+          "name": "SQL Core",
+          "description": "Learn SELECT, WHERE, ORDER BY, and aggregates.",
+          "topics": {
+            "select": {
+              "id": "select",
+              "name": "SELECT Queries",
+              "description": "Retrieve data from tables using SELECT.",
+              "notes": {
+                "sql-select-note": {
+                  "id": "sql-select-note",
+                  "title": "Basic SELECT",
+                  "content": "Use SELECT to choose columns from a table.\n\nExample:\nSELECT name, grade FROM students WHERE grade = 'A';",
+                  "type": "text"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "quizzes": {
+    "python-quiz": {
+      "id": "python-quiz",
+      "title": "Python Basics Quiz",
+      "subjectId": "python",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Which keyword is used for a loop over a range in Python?",
+          "options": ["for", "loop", "repeat", "iterate"],
+          "correctAnswer": 0,
+          "explanation": "Python uses the for keyword to iterate over ranges, lists, and other iterables."
+        }
+      ]
+    },
+    "sql-quiz": {
+      "id": "sql-quiz",
+      "title": "SQL Starter Quiz",
+      "subjectId": "sql",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Which clause filters rows in SQL?",
+          "options": ["ORDER BY", "GROUP BY", "WHERE", "LIMIT"],
+          "correctAnswer": 2,
+          "explanation": "WHERE is used to filter rows before grouping or ordering."
+        }
+      ]
+    }
+  }
+}

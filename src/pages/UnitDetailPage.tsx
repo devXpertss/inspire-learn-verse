@@ -5,10 +5,15 @@ import { ChevronRight, ArrowLeft, FileText } from "lucide-react";
 import type { Unit } from "@/lib/types";
 import { FloatingShape, GridPattern } from "@/components/FloatingElements";
 import { SkeletonList } from "@/components/SkeletonCard";
+import { useSiteContent } from "@/hooks/useFirebase";
+import { defaultSiteContent } from "@/lib/defaultSiteContent";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export default function UnitDetailPage() {
   const { subjectId, unitId } = useParams();
   const { data: unit, loading } = useFirebaseData<Unit>(`subjects/${subjectId}/units/${unitId}`);
+  const { data: siteContentData } = useSiteContent();
+  const content = (siteContentData ?? defaultSiteContent).pages.unitDetail;
 
   if (loading) {
     return (
@@ -23,7 +28,7 @@ export default function UnitDetailPage() {
   if (!unit) {
     return (
       <div className="min-h-screen pt-24 flex items-center justify-center">
-        <p className="text-muted-foreground">Unit not found.</p>
+        <p className="text-muted-foreground">{content.notFound}</p>
       </div>
     );
   }
@@ -39,7 +44,7 @@ export default function UnitDetailPage() {
 
         <div className="container mx-auto px-4 relative z-10">
           <Link to={`/subjects/${subjectId}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to Units
+            <ArrowLeft className="w-4 h-4" /> {content.backLabel}
           </Link>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
@@ -47,10 +52,10 @@ export default function UnitDetailPage() {
             <p className="text-lg text-muted-foreground max-w-2xl">{unit.description}</p>
           </motion.div>
 
-          <h2 className="text-2xl font-heading font-semibold mb-8">Topics</h2>
+          <h2 className="text-2xl font-heading font-semibold mb-8">{content.topicsTitle}</h2>
 
           {topics.length === 0 ? (
-            <p className="text-muted-foreground">No topics available.</p>
+            <p className="text-muted-foreground">{content.empty}</p>
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
               {topics.map(([key, topic], i) => {
@@ -74,12 +79,12 @@ export default function UnitDetailPage() {
                           <h3 className="font-heading font-semibold group-hover:text-primary transition-colors">
                             {topic.name}
                           </h3>
-                          <span className="text-xs text-muted-foreground">{noteCount} notes</span>
+                          <span className="text-xs text-muted-foreground">{noteCount} {content.notesSuffix}</span>
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{topic.description}</p>
                       <span className="inline-flex items-center text-sm text-primary font-medium">
-                        View Notes <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                        {content.viewNotesLabel} <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </span>
                     </Link>
                   </motion.div>
@@ -90,11 +95,7 @@ export default function UnitDetailPage() {
         </div>
       </section>
 
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 CodeSpire. Built with passion for learning.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
