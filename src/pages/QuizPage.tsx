@@ -92,7 +92,7 @@ function QuizRunner({ quiz }: { quiz: Quiz }) {
             {question.options.map((opt, idx) => {
               let optClass = "border-border bg-gradient-card hover:border-primary/50";
               if (showResult) {
-                if (idx === question.correctAnswer) optClass = "border-green-500 bg-green-500/10";
+                if (idx === question.correctAnswer) optClass = "border-primary bg-primary/10";
                 else if (idx === selected) optClass = "border-destructive bg-destructive/10";
               } else if (idx === selected) {
                 optClass = "border-primary bg-secondary";
