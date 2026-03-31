@@ -117,8 +117,8 @@ export default function HomePage() {
               <div className="relative glass rounded-2xl p-8 shadow-glow">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-3 h-3 rounded-full bg-destructive" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <div className="w-3 h-3 rounded-full bg-accent/60" />
+                  <div className="w-3 h-3 rounded-full bg-primary/40" />
                   <span className="text-xs text-muted-foreground ml-2 font-mono">playground.py</span>
                 </div>
                 <pre className="text-sm font-mono text-foreground">

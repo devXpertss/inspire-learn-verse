@@ -110,7 +110,7 @@ function QuizRunner({ quiz }: { quiz: Quiz }) {
                   </span>
                   <span className="text-sm">{opt}</span>
                   {showResult && idx === question.correctAnswer && (
-                    <CheckCircle2 className="w-5 h-5 text-green-500 ml-auto flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-primary ml-auto flex-shrink-0" />
                   )}
                   {showResult && idx === selected && idx !== question.correctAnswer && (
                     <XCircle className="w-5 h-5 text-destructive ml-auto flex-shrink-0" />
