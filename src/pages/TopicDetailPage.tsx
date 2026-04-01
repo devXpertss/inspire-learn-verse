@@ -32,6 +32,13 @@ export default function TopicDetailPage() {
   const { data: siteContentData } = useSiteContent();
   const content = (siteContentData ?? defaultSiteContent).pages.topicDetail;
 
+  const notes = useMemo(
+    () => (topic?.notes ? Object.entries(topic.notes).filter(([, note]) => note.type !== "ppt") : []),
+    [topic?.notes]
+  );
+  const activeNote = selectedNote ? topic?.notes?.[selectedNote] : null;
+  const presentationCount = topic?.notes ? Object.values(topic.notes).filter((note) => note.type === "ppt").length : 0;
+
   if (loading) {
     return (
       <div className="min-h-screen pt-24 pb-16">
@@ -58,13 +65,6 @@ export default function TopicDetailPage() {
       </div>
     );
   }
-
-  const notes = useMemo(
-    () => (topic.notes ? Object.entries(topic.notes).filter(([, note]) => note.type !== "ppt") : []),
-    [topic.notes]
-  );
-  const activeNote = selectedNote ? topic.notes?.[selectedNote] : null;
-  const presentationCount = topic.notes ? Object.values(topic.notes).filter((note) => note.type === "ppt").length : 0;
 
   return (
     <div className="min-h-screen pt-16">

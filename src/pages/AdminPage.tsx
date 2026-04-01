@@ -127,7 +127,6 @@ function JsonEditor({ path, title, description }: { path: string; title: string;
     }
   };
 
-  const [loading, setLoading] = useState(true);
   if (loading) return <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" />;
 
   return (
