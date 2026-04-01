@@ -5,7 +5,8 @@ import { defaultSiteContent } from "@/lib/defaultSiteContent";
 export function SiteFooter() {
   const { data: siteContentData } = useSiteContent();
   const siteContent = siteContentData ?? defaultSiteContent;
-  const { brand, footer } = siteContent;
+  const brand = siteContent?.brand ?? defaultSiteContent.brand;
+  const footer = siteContent?.footer ?? defaultSiteContent.footer;
 
   const renderLink = (item: { label: string; path: string; external?: boolean }) => {
     if (item.external || item.path.startsWith("http")) {
