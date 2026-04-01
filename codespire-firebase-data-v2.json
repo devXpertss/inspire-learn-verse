@@ -40,7 +40,60 @@
       "badge": "Your Ultimate Study Companion",
       "titlePrefix": "Learn. Code.",
       "titleAccent": "Inspire.",
-      "description": "Master programming with structured notes, a local code playground, separate presentations, and quizzes — all powered by Firebase content."
+      "description": "Master programming with structured notes, a local code playground, separate presentations, and quizzes — all powered by Firebase content.",
+      "primaryCta": "Start Learning",
+      "secondaryCta": "Try Playground",
+      "codePreviewLabel": "playground.py",
+      "codePreviewCode": "# Welcome to CodeSpire Playground!\nfor i in range(5):\n    print(f'Hello {i}')",
+      "stats": [
+        { "icon": "BookOpen", "value": "50+", "label": "Subjects" },
+        { "icon": "Target", "value": "500+", "label": "Topics" },
+        { "icon": "Layers", "value": "1000+", "label": "Notes" },
+        { "icon": "Brain", "value": "200+", "label": "Quizzes" }
+      ],
+      "learningPathsTitle": "Popular",
+      "learningPathsAccent": "Learning Paths",
+      "learningPathsDescription": "Follow curated paths designed to take you from beginner to advanced.",
+      "learningPaths": [
+        { "title": "Python Mastery", "topics": "45 topics covered", "icon": "🐍" },
+        { "title": "C Programming", "topics": "38 topics covered", "icon": "⚡" },
+        { "title": "SQL & Databases", "topics": "30 topics covered", "icon": "🗄️" },
+        { "title": "Data Structures", "topics": "52 topics covered", "icon": "🏗️" }
+      ],
+      "featuresTitle": "Everything You Need to",
+      "featuresAccent": "Excel",
+      "featuresDescription": "Comprehensive tools designed to accelerate your learning journey.",
+      "features": [
+        { "icon": "BookOpen", "title": "Structured Notes", "description": "Organized subjects, units, topics, and detailed study notes." },
+        { "icon": "Presentation", "title": "Separate PPT Section", "description": "Watch live presentations in their own section with embeds and thumbnails." },
+        { "icon": "Code", "title": "Local Playground", "description": "Run Python, SQL, and C with in-browser runtimes instead of a remote API." },
+        { "icon": "Brain", "title": "Interactive Quizzes", "description": "Test your knowledge with subject-wise quizzes and instant explanations." },
+        { "icon": "Target", "title": "Editable Content", "description": "Every label, quote, contact item, and image URL can be changed from Firebase." },
+        { "icon": "Users", "title": "Realtime Updates", "description": "Changes made in the admin panel sync across the website instantly." }
+      ],
+      "whyTitle": "Why choose",
+      "whyAccent": "CodeSpire",
+      "whyDescription": "We believe learning to code should be accessible, visual, and fully customizable.",
+      "whyPoints": [
+        "All website text is controlled by Firebase JSON",
+        "Interactive browser-based code execution",
+        "Separate presentations section with live embeds",
+        "Downloadable notes in TXT format",
+        "Dark and light mode for comfortable studying",
+        "Search across subjects, notes, presentations, quizzes, and contact info"
+      ],
+      "testimonialsTitle": "What Our",
+      "testimonialsAccent": "Students Say",
+      "testimonialsDescription": "Join learners who love the visual and editable experience.",
+      "testimonials": [
+        { "name": "Priya S.", "role": "CS Student", "quote": "CodeSpire made learning DSA so much easier.", "avatar": "PS" },
+        { "name": "Alex M.", "role": "Developer", "quote": "The local playground is perfect for quick practice.", "avatar": "AM" },
+        { "name": "Sarah K.", "role": "Educator", "quote": "I can update the entire website from Firebase without touching code.", "avatar": "SK" }
+      ],
+      "ctaTitle": "Ready to Start Learning?",
+      "ctaDescription": "Dive into structured courses, practice coding, view presentations, and test your knowledge.",
+      "ctaPrimary": "Get Started",
+      "ctaSecondary": "Contact Us"
     },
     "pages": {
       "subjects": {
@@ -191,6 +244,14 @@
       "thumbnail": "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1200&q=80",
       "fileUrl": "https://file-examples.com/storage/fe1d58d6b793102b664f645/2017/08/file_example_PPT_500kB.ppt",
       "embedUrl": "https://view.officeapps.live.com/op/embed.aspx?src=https%3A%2F%2Ffile-examples.com%2Fstorage%2Ffe1d58d6b793102b664f645%2F2017%2F08%2Ffile_example_PPT_500kB.ppt"
+    },
+    "c-pointers-deck": {
+      "title": "C Pointers & Memory",
+      "description": "Visual guide to pointers, memory allocation, and arrays in C.",
+      "category": "C Programming",
+      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "https://file-examples.com/storage/fe1d58d6b793102b664f645/2017/08/file_example_PPT_500kB.ppt",
+      "embedUrl": "https://view.officeapps.live.com/op/embed.aspx?src=https%3A%2F%2Ffile-examples.com%2Fstorage%2Ffe1d58d6b793102b664f645%2F2017%2F08%2Ffile_example_PPT_500kB.ppt"
     }
   },
   "subjects": {
@@ -233,6 +294,39 @@
               }
             }
           }
+        },
+        "python-functions": {
+          "id": "python-functions",
+          "name": "Functions & Modules",
+          "description": "Learn to write reusable code with functions and modules.",
+          "topics": {
+            "functions": {
+              "id": "functions",
+              "name": "Defining Functions",
+              "description": "Create and call functions with parameters and return values.",
+              "notes": {
+                "python-func-note": {
+                  "id": "python-func-note",
+                  "title": "Python Functions",
+                  "content": "Functions are defined using the def keyword.\n\nExample:\ndef greet(name):\n    return f'Hello, {name}!'\n\nprint(greet('CodeSpire'))",
+                  "type": "text"
+                }
+              }
+            },
+            "modules": {
+              "id": "modules",
+              "name": "Importing Modules",
+              "description": "Use built-in and third-party modules.",
+              "notes": {
+                "python-modules-note": {
+                  "id": "python-modules-note",
+                  "title": "Python Modules",
+                  "content": "Import modules with the import statement.\n\nExample:\nimport math\nprint(math.sqrt(16))  # 4.0\n\nfrom random import randint\nprint(randint(1, 10))",
+                  "type": "text"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -256,7 +350,40 @@
                 "c-stdio-note": {
                   "id": "c-stdio-note",
                   "title": "stdio.h Basics",
-                  "content": "The stdio.h header provides printf and scanf for basic I/O.\n\nExample:\n#include <stdio.h>\nint main(){ printf(\"Hello\\n\"); return 0; }",
+                  "content": "The stdio.h header provides printf and scanf for basic I/O.\n\nExample:\n#include <stdio.h>\nint main() {\n    printf(\"Hello, World!\\n\");\n    return 0;\n}",
+                  "type": "text"
+                }
+              }
+            },
+            "variables-c": {
+              "id": "variables-c",
+              "name": "Variables in C",
+              "description": "Declare and use variables with types.",
+              "notes": {
+                "c-vars-note": {
+                  "id": "c-vars-note",
+                  "title": "C Variables",
+                  "content": "C requires explicit type declarations.\n\nExample:\nint age = 25;\nfloat pi = 3.14;\nchar grade = 'A';\nprintf(\"Age: %d, Pi: %.2f, Grade: %c\\n\", age, pi, grade);",
+                  "type": "text"
+                }
+              }
+            }
+          }
+        },
+        "c-control-flow": {
+          "id": "c-control-flow",
+          "name": "Control Flow",
+          "description": "Conditionals, loops, and switch statements.",
+          "topics": {
+            "if-else": {
+              "id": "if-else",
+              "name": "If-Else Statements",
+              "description": "Make decisions in your C programs.",
+              "notes": {
+                "c-ifelse-note": {
+                  "id": "c-ifelse-note",
+                  "title": "If-Else in C",
+                  "content": "Use if-else for conditional execution.\n\nExample:\nint x = 10;\nif (x > 5) {\n    printf(\"Greater than 5\\n\");\n} else {\n    printf(\"5 or less\\n\");\n}",
                   "type": "text"
                 }
               }
@@ -289,6 +416,39 @@
                   "type": "text"
                 }
               }
+            },
+            "joins": {
+              "id": "joins",
+              "name": "JOIN Operations",
+              "description": "Combine data from multiple tables.",
+              "notes": {
+                "sql-joins-note": {
+                  "id": "sql-joins-note",
+                  "title": "SQL JOINs",
+                  "content": "JOIN combines rows from two or more tables.\n\nExample:\nSELECT s.name, c.course_name\nFROM students s\nINNER JOIN courses c ON s.course_id = c.id;",
+                  "type": "text"
+                }
+              }
+            }
+          }
+        },
+        "sql-advanced": {
+          "id": "sql-advanced",
+          "name": "Advanced SQL",
+          "description": "Subqueries, indexes, and optimization.",
+          "topics": {
+            "subqueries": {
+              "id": "subqueries",
+              "name": "Subqueries",
+              "description": "Nest queries for complex data retrieval.",
+              "notes": {
+                "sql-subquery-note": {
+                  "id": "sql-subquery-note",
+                  "title": "SQL Subqueries",
+                  "content": "A subquery is a query nested inside another query.\n\nExample:\nSELECT name FROM students\nWHERE grade > (SELECT AVG(grade) FROM students);",
+                  "type": "text"
+                }
+              }
             }
           }
         }
@@ -307,6 +467,20 @@
           "options": ["for", "loop", "repeat", "iterate"],
           "correctAnswer": 0,
           "explanation": "Python uses the for keyword to iterate over ranges, lists, and other iterables."
+        },
+        {
+          "id": "q2",
+          "question": "What is the output of print(type(3.14))?",
+          "options": ["<class 'int'>", "<class 'float'>", "<class 'str'>", "<class 'double'>"],
+          "correctAnswer": 1,
+          "explanation": "3.14 is a floating-point number, so type() returns <class 'float'>."
+        },
+        {
+          "id": "q3",
+          "question": "Which function is used to get user input in Python?",
+          "options": ["scanf()", "input()", "read()", "get()"],
+          "correctAnswer": 1,
+          "explanation": "The input() function reads a line of text from the user."
         }
       ]
     },
@@ -321,6 +495,41 @@
           "options": ["ORDER BY", "GROUP BY", "WHERE", "LIMIT"],
           "correctAnswer": 2,
           "explanation": "WHERE is used to filter rows before grouping or ordering."
+        },
+        {
+          "id": "q2",
+          "question": "Which JOIN returns all rows from the left table?",
+          "options": ["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "CROSS JOIN"],
+          "correctAnswer": 1,
+          "explanation": "LEFT JOIN returns all rows from the left table and matching rows from the right."
+        },
+        {
+          "id": "q3",
+          "question": "What does COUNT(*) do?",
+          "options": ["Counts columns", "Counts all rows", "Counts distinct values", "Counts null values"],
+          "correctAnswer": 1,
+          "explanation": "COUNT(*) counts the total number of rows in a result set."
+        }
+      ]
+    },
+    "c-quiz": {
+      "id": "c-quiz",
+      "title": "C Programming Quiz",
+      "subjectId": "c-programming",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Which header file is needed for printf()?",
+          "options": ["stdlib.h", "string.h", "stdio.h", "math.h"],
+          "correctAnswer": 2,
+          "explanation": "printf() is declared in stdio.h (standard input/output header)."
+        },
+        {
+          "id": "q2",
+          "question": "What is the size of int on most 64-bit systems?",
+          "options": ["2 bytes", "4 bytes", "8 bytes", "1 byte"],
+          "correctAnswer": 1,
+          "explanation": "On most modern 64-bit systems, int is 4 bytes (32 bits)."
         }
       ]
     }

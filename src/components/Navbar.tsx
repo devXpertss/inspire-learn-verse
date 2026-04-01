@@ -22,7 +22,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: siteContentData } = useSiteContent();
   const siteContent = siteContentData ?? defaultSiteContent;
-  const navItems = siteContent.navigation.items;
+  const navItems = siteContent?.navigation?.items ?? defaultSiteContent.navigation.items;
   const brand = siteContent.brand;
 
   return (
