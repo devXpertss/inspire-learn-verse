@@ -17,11 +17,9 @@ const languageDefaults: Record<string, { code: string; lang: string; icon: strin
     code: `# Python Playground 🐍
 print("Hello, CodeSpire!")
 
-# Try writing your code here
 for i in range(5):
     print(f"Count: {i}")
 
-# Calculate factorial
 def factorial(n):
     if n <= 1:
         return 1
@@ -38,12 +36,10 @@ print(f"Factorial of 10 = {factorial(10)}")`,
 int main() {
     printf("Hello, CodeSpire!\\n");
     
-    // Loop example
     for (int i = 0; i < 5; i++) {
         printf("Count: %d\\n", i);
     }
     
-    // Factorial
     int n = 10, fact = 1;
     for (int i = 1; i <= n; i++) {
         fact *= i;
@@ -59,7 +55,6 @@ int main() {
     code: `-- SQL Playground 🗄️
 SELECT 'Hello, CodeSpire!' AS greeting;
 
--- Create and query a table
 CREATE TABLE students (id INTEGER, name TEXT, grade TEXT);
 INSERT INTO students VALUES (1, 'Alice', 'A');
 INSERT INTO students VALUES (2, 'Bob', 'B');
@@ -68,12 +63,6 @@ INSERT INTO students VALUES (3, 'Charlie', 'A');
 SELECT * FROM students WHERE grade = 'A';
 SELECT COUNT(*) as total_students FROM students;`,
   },
-};
-
-const languageVersions: Record<string, { language: string; version: string }> = {
-  python: { language: "python", version: "Local WASM" },
-  c: { language: "c", version: "Browser Clang" },
-  sql: { language: "sqlite3", version: "SQL.js" },
 };
 
 export default function PlaygroundPage() {
@@ -96,15 +85,15 @@ export default function PlaygroundPage() {
 
   const handleRun = useCallback(async () => {
     setRunning(true);
-    setOutput(content.initializingMessage);
+    setOutput("⏳ Processing your code...");
     try {
       const result = await runPlaygroundCode(selectedLang, code);
       setOutput(result);
     } catch (err: any) {
-      setOutput(`Error: ${err.message || content.executionError}`);
+      setOutput(`Error: ${err.message || "Execution failed."}`);
     }
     setRunning(false);
-  }, [selectedLang, code, content]);
+  }, [selectedLang, code]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -114,7 +103,6 @@ export default function PlaygroundPage() {
 
   return (
     <div className="min-h-screen pt-16">
-      {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-20">
         <GridPattern />
         <FloatingShape type="cube" className="top-10 right-[10%]" delay={0} />
@@ -134,7 +122,7 @@ export default function PlaygroundPage() {
               </div>
             </div>
             <p className="text-sm text-primary bg-secondary border border-border rounded-xl px-4 py-3 max-w-3xl">
-              {content.localNotice}
+              ✨ Powered by AI — write your code and get instant execution results
             </p>
           </motion.div>
 
@@ -163,9 +151,6 @@ export default function PlaygroundPage() {
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Code className="w-4 h-4" />
                   <span className="capitalize font-medium">{selectedLang}</span>
-                  <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                    v{languageVersions[selectedLang].version}
-                  </span>
                 </div>
                 <div className="flex gap-1.5">
                   <Button variant="ghost" size="sm" onClick={handleCopy} className="h-8">
@@ -239,7 +224,7 @@ export default function PlaygroundPage() {
                   <span className="text-foreground">{output}</span>
                 ) : (
                   <span className="text-muted-foreground">
-                    {running ? content.runningOutput : content.emptyOutput}
+                    {content.emptyOutput}
                   </span>
                 )}
               </pre>
@@ -254,9 +239,9 @@ export default function PlaygroundPage() {
             className="mt-8 grid md:grid-cols-3 gap-4"
           >
             {[
-              { title: "Python 3.10", desc: "Full Python with standard library support", icon: "🐍" },
-              { title: "GCC 10.2", desc: "Compile and run C programs with GCC", icon: "⚡" },
-              { title: "SQLite 3.36", desc: "Run SQL queries with SQLite engine", icon: "🗄️" },
+              { title: "Python", desc: "Full Python support — loops, functions, classes, and more", icon: "🐍" },
+              { title: "C Language", desc: "Write and execute C programs with standard I/O", icon: "⚡" },
+              { title: "SQL", desc: "Run SQL queries — CREATE, INSERT, SELECT, and more", icon: "🗄️" },
             ].map((tip, i) => (
               <div key={i} className="p-4 rounded-xl bg-gradient-card border border-border">
                 <div className="flex items-center gap-2 mb-2">

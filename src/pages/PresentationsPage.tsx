@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Presentation, ArrowRight, Download } from "lucide-react";
+import { Presentation, ArrowRight, Download, Maximize2, X } from "lucide-react";
 import { FloatingShape, GridPattern, FloatingParticles } from "@/components/FloatingElements";
 import { Button } from "@/components/ui/button";
 import { SkeletonList } from "@/components/SkeletonCard";
@@ -23,6 +23,7 @@ export default function PresentationsPage() {
   const content = (siteContentData ?? defaultSiteContent).pages.presentations;
   const list = useMemo(() => (presentations ? Object.entries(presentations) : []), [presentations]);
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");
@@ -34,6 +35,23 @@ export default function PresentationsPage() {
 
   return (
     <div className="min-h-screen pt-16">
+      {/* Fullscreen overlay */}
+      {fullscreen && activeEmbedUrl && (
+        <div className="fixed inset-0 z-[100] bg-background flex flex-col">
+          <div className="flex items-center justify-between p-4 border-b border-border bg-card">
+            <h2 className="font-heading font-bold text-lg">{activePresentation?.title}</h2>
+            <Button variant="ghost" size="sm" onClick={() => setFullscreen(false)}>
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
+          <iframe
+            src={activeEmbedUrl}
+            title="Fullscreen Presentation"
+            className="flex-1 w-full bg-card"
+          />
+        </div>
+      )}
+
       <section className="relative overflow-hidden py-20 md:py-28">
         <GridPattern />
         <FloatingParticles />
@@ -105,11 +123,18 @@ export default function PresentationsPage() {
                     <h2 className="text-2xl font-heading font-bold">{activePresentation?.title}</h2>
                     <p className="text-sm text-muted-foreground mt-1">{activePresentation?.description}</p>
                   </div>
-                  {activePresentation?.fileUrl && (
-                    <a href={activePresentation.fileUrl} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline"><Download className="w-4 h-4 mr-2" /> {content.downloadFile}</Button>
-                    </a>
-                  )}
+                  <div className="flex gap-2">
+                    {activeEmbedUrl && (
+                      <Button variant="outline" onClick={() => setFullscreen(true)}>
+                        <Maximize2 className="w-4 h-4 mr-2" /> Full Screen
+                      </Button>
+                    )}
+                    {activePresentation?.fileUrl && (
+                      <a href={activePresentation.fileUrl} target="_blank" rel="noopener noreferrer">
+                        <Button variant="outline"><Download className="w-4 h-4 mr-2" /> {content.downloadFile}</Button>
+                      </a>
+                    )}
+                  </div>
                 </div>
 
                 {activeEmbedUrl ? (
