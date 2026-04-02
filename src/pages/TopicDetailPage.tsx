@@ -151,7 +151,7 @@ export default function TopicDetailPage() {
                     </Button>
                   </div>
                   <div className="prose prose-sm max-w-none text-foreground">
-                    <div className="whitespace-pre-wrap leading-relaxed">{activeNote.content}</div>
+                    <pre className="whitespace-pre-wrap leading-relaxed font-sans text-sm bg-transparent border-none p-0 m-0 text-foreground">{activeNote.content}</pre>
                   </div>
                 </motion.div>
               ) : (
