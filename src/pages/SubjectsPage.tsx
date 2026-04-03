@@ -6,18 +6,20 @@ import { FloatingShape, GridPattern, FloatingParticles } from "@/components/Floa
 import { SkeletonList } from "@/components/SkeletonCard";
 import { useSiteContent } from "@/hooks/useFirebase";
 import { defaultSiteContent } from "@/lib/defaultSiteContent";
+import { ContentBlockImage } from "@/components/ContentBlockImage";
 import { SiteFooter } from "@/components/SiteFooter";
 
 export default function SubjectsPage() {
   const { data: subjects, loading, error } = useSubjects();
   const { data: siteContentData } = useSiteContent();
-  const content = (siteContentData ?? defaultSiteContent).pages.subjects;
+  const siteContent = siteContentData ?? defaultSiteContent;
+  const content = siteContent.pages.subjects;
+  const brand = siteContent.brand ?? defaultSiteContent.brand;
 
   const subjectList = subjects ? Object.entries(subjects) : [];
 
   return (
     <div className="min-h-screen pt-16">
-      {/* Hero */}
       <section className="relative overflow-hidden py-20 md:py-28">
         <GridPattern />
         <FloatingParticles />
@@ -26,23 +28,33 @@ export default function SubjectsPage() {
         <FloatingShape type="ring" className="top-40 left-[20%]" delay={1} />
 
         <div className="container mx-auto px-4 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-6"
-            >
-              <GraduationCap className="w-4 h-4" />
-              {content.badge}
+          <div className="grid items-center gap-10 mb-16 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center lg:text-left">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring" }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-6"
+              >
+                <GraduationCap className="w-4 h-4" />
+                {content.badge}
+              </motion.div>
+              <h1 className="text-5xl md:text-7xl font-bold font-heading mb-4">
+                <span className="text-gradient">{content.title}</span>
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">{content.description}</p>
             </motion.div>
-            <h1 className="text-5xl md:text-7xl font-bold font-heading mb-4">
-              <span className="text-gradient">{content.title}</span>
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              {content.description}
-            </p>
-          </motion.div>
+
+            <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}>
+              <ContentBlockImage
+                src={content.heroImage || "/content/study-hub.svg"}
+                alt="Subjects hero visual"
+                aspectRatio={4 / 3}
+                overlayLabel={content.title}
+                objectFit="contain"
+              />
+            </motion.div>
+          </div>
 
           {loading ? (
             <SkeletonList count={6} />
@@ -54,9 +66,7 @@ export default function SubjectsPage() {
             <div className="text-center py-20">
               <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
               <h3 className="text-lg font-heading font-semibold mb-2">{content.emptyTitle}</h3>
-              <p className="text-muted-foreground text-sm">
-                {content.emptyDescription}
-              </p>
+              <p className="text-muted-foreground text-sm">{content.emptyDescription}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -69,20 +79,19 @@ export default function SubjectsPage() {
                   });
                 }
                 return (
-                  <motion.div
-                    key={key}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.08 }}
-                  >
+                  <motion.div key={key} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
                     <Link
                       to={`/subjects/${key}`}
                       className="group block p-7 rounded-2xl bg-gradient-card border border-border shadow-card hover:shadow-glow transition-all duration-300 hover:-translate-y-2"
                     >
+                      <ContentBlockImage
+                        src={subject.image || content.cardFallbackImage || brand.logoUrl}
+                        alt={subject.name}
+                        aspectRatio={16 / 10}
+                        className="mb-5"
+                      />
                       <div className="text-5xl mb-5">{subject.icon || "📚"}</div>
-                      <h3 className="text-xl font-heading font-bold mb-2 group-hover:text-primary transition-colors">
-                        {subject.name}
-                      </h3>
+                      <h3 className="text-xl font-heading font-bold mb-2 group-hover:text-primary transition-colors">{subject.name}</h3>
                       <p className="text-sm text-muted-foreground mb-5 line-clamp-2">{subject.description}</p>
                       <div className="flex items-center gap-4 mb-4">
                         <span className="flex items-center gap-1 text-xs text-muted-foreground">

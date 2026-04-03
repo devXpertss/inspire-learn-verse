@@ -28,6 +28,7 @@ export interface Topic {
   id: string;
   name: string;
   description: string;
+  image?: string;
   notes: Record<string, Note>;
 }
 
@@ -35,6 +36,7 @@ export interface Unit {
   id: string;
   name: string;
   description: string;
+  image?: string;
   topics: Record<string, Topic>;
 }
 
@@ -44,6 +46,7 @@ export interface Subject {
   description: string;
   icon: string;
   color: string;
+  image?: string;
   units: Record<string, Unit>;
 }
 

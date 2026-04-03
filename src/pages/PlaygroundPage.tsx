@@ -1,19 +1,22 @@
-import { useState, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import Editor from "@monaco-editor/react";
-import { Play, Loader2, RotateCcw, Code, Terminal, Copy, Check, Maximize2, Minimize2 } from "lucide-react";
+import { Play, Loader2, RotateCcw, Code, Terminal, Copy, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingShape, GridPattern } from "@/components/FloatingElements";
 import { Skeleton } from "@/components/ui/skeleton";
 import { runPlaygroundCode } from "@/lib/playgroundRuntime";
 import { useSiteContent } from "@/hooks/useFirebase";
 import { defaultSiteContent } from "@/lib/defaultSiteContent";
+import { InlineCodeEditor } from "@/components/playground/InlineCodeEditor";
+import { ContentBlockImage } from "@/components/ContentBlockImage";
 import { SiteFooter } from "@/components/SiteFooter";
 
-const languageDefaults: Record<string, { code: string; lang: string; icon: string }> = {
+const fallbackLanguageDefaults: Record<string, { code: string; lang: string; icon: string; title: string; helper: string }> = {
   python: {
     lang: "python",
     icon: "🐍",
+    title: "Python Workspace",
+    helper: "Instant script editing with Python-style starter code.",
     code: `# Python Playground 🐍
 print("Hello, CodeSpire!")
 
@@ -30,70 +33,74 @@ print(f"Factorial of 10 = {factorial(10)}")`,
   c: {
     lang: "c",
     icon: "⚡",
+    title: "C Compiler View",
+    helper: "Switch to C and get starter code instantly without reloading.",
     code: `// C Playground ⚡
 #include <stdio.h>
 
 int main() {
     printf("Hello, CodeSpire!\\n");
-    
+
     for (int i = 0; i < 5; i++) {
         printf("Count: %d\\n", i);
     }
-    
+
     int n = 10, fact = 1;
     for (int i = 1; i <= n; i++) {
         fact *= i;
     }
     printf("Factorial of %d = %d\\n", n, fact);
-    
+
     return 0;
 }`,
   },
   sql: {
     lang: "sql",
     icon: "🗄️",
+    title: "SQL Query Console",
+    helper: "Run structured query examples with a built-in editor surface.",
     code: `-- SQL Playground 🗄️
 SELECT 'Hello, CodeSpire!' AS greeting;
-
-CREATE TABLE students (id INTEGER, name TEXT, grade TEXT);
-INSERT INTO students VALUES (1, 'Alice', 'A');
-INSERT INTO students VALUES (2, 'Bob', 'B');
-INSERT INTO students VALUES (3, 'Charlie', 'A');
-
-SELECT * FROM students WHERE grade = 'A';
-SELECT COUNT(*) as total_students FROM students;`,
+SELECT 10 * 2 AS doubled_value;`,
   },
 };
 
 export default function PlaygroundPage() {
   const [selectedLang, setSelectedLang] = useState("python");
-  const [code, setCode] = useState(languageDefaults.python.code);
+  const [code, setCode] = useState(fallbackLanguageDefaults.python.code);
   const [output, setOutput] = useState("");
   const [running, setRunning] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [editorLoaded, setEditorLoaded] = useState(false);
-  const { data: siteContentData } = useSiteContent();
+  const { data: siteContentData, loading } = useSiteContent();
   const content = (siteContentData ?? defaultSiteContent).pages.playground;
+
+  const languageDefaults = useMemo(() => {
+    const remoteExamples = content.examples ?? {};
+
+    return {
+      python: { ...fallbackLanguageDefaults.python, ...(remoteExamples.python ?? {}) },
+      c: { ...fallbackLanguageDefaults.c, ...(remoteExamples.c ?? {}) },
+      sql: { ...fallbackLanguageDefaults.sql, ...(remoteExamples.sql ?? {}) },
+    };
+  }, [content.examples]);
 
   const handleLangChange = (lang: string) => {
     setSelectedLang(lang);
     setCode(languageDefaults[lang].code);
     setOutput("");
-    setEditorLoaded(false);
   };
 
   const handleRun = useCallback(async () => {
     setRunning(true);
-    setOutput("⏳ Processing your code...");
+    setOutput(content.runningOutput || "Executing your code...");
     try {
       const result = await runPlaygroundCode(selectedLang, code);
       setOutput(result);
     } catch (err: any) {
-      setOutput(`Error: ${err.message || "Execution failed."}`);
+      setOutput(`Error: ${err.message || content.executionError || "Execution failed."}`);
     }
     setRunning(false);
-  }, [selectedLang, code]);
+  }, [selectedLang, code, content.runningOutput, content.executionError]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -122,133 +129,129 @@ export default function PlaygroundPage() {
               </div>
             </div>
             <p className="text-sm text-primary bg-secondary border border-border rounded-xl px-4 py-3 max-w-3xl">
-              ✨ Powered by AI — write your code and get instant execution results
+              ✨ {content.localNotice}
             </p>
           </motion.div>
 
-          {/* Language Tabs */}
-          <div className="flex gap-2 mb-6">
-            {Object.entries(languageDefaults).map(([lang, config]) => (
-              <button
-                key={lang}
-                onClick={() => handleLangChange(lang)}
-                className={`px-5 py-2.5 rounded-xl text-sm font-medium capitalize transition-all flex items-center gap-2 ${
-                  selectedLang === lang
-                    ? "bg-gradient-primary text-primary-foreground shadow-glow"
-                    : "bg-secondary text-secondary-foreground hover:bg-muted"
-                }`}
-              >
-                <span>{config.icon}</span>
-                {lang}
-              </button>
-            ))}
-          </div>
-
-          <div className={`grid ${expanded ? "" : "lg:grid-cols-2"} gap-4`}>
-            {/* Editor */}
-            <div className="rounded-xl border border-border overflow-hidden bg-card">
-              <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-muted/50">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Code className="w-4 h-4" />
-                  <span className="capitalize font-medium">{selectedLang}</span>
-                </div>
-                <div className="flex gap-1.5">
-                  <Button variant="ghost" size="sm" onClick={handleCopy} className="h-8">
-                    {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => setExpanded(!expanded)} className="h-8">
-                    {expanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => { setCode(languageDefaults[selectedLang].code); setOutput(""); }} className="h-8">
-                    <RotateCcw className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={handleRun}
-                    disabled={running}
-                    className="bg-gradient-primary text-primary-foreground hover:opacity-90 h-8 px-4"
-                  >
-                    {running ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Play className="w-4 h-4 mr-1" />}
-                    {content.runLabel}
-                  </Button>
-                </div>
-              </div>
-              {!editorLoaded && (
-                <div className="p-4 space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-4 w-5/6" />
-                  <Skeleton className="h-4 w-2/3" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              )}
-              <div className={editorLoaded ? "" : "h-0 overflow-hidden"}>
-                <Editor
-                  height={expanded ? "600px" : "450px"}
-                  language={languageDefaults[selectedLang].lang}
-                  value={code}
-                  onChange={(v) => setCode(v || "")}
-                  theme="vs-dark"
-                  onMount={() => setEditorLoaded(true)}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    padding: { top: 16 },
-                    scrollBeyondLastLine: false,
-                    wordWrap: "on",
-                    lineNumbers: "on",
-                    renderLineHighlight: "all",
-                    cursorBlinking: "smooth",
-                    smoothScrolling: true,
-                    formatOnPaste: true,
-                  }}
-                />
-              </div>
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_320px] gap-6 items-start mb-6">
+            <div className="flex gap-2 flex-wrap">
+              {Object.entries(languageDefaults).map(([lang, config]) => (
+                <button
+                  key={lang}
+                  onClick={() => handleLangChange(lang)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-medium capitalize transition-all flex items-center gap-2 border ${
+                    selectedLang === lang
+                      ? "bg-gradient-primary text-primary-foreground shadow-glow border-primary/30"
+                      : "bg-secondary text-secondary-foreground hover:bg-muted border-border"
+                  }`}
+                >
+                  <span>{config.icon}</span>
+                  {lang}
+                </button>
+              ))}
             </div>
 
-            {/* Output */}
-            <div className="rounded-xl border border-border overflow-hidden bg-card">
-              <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-muted/50">
-                <div className="flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground font-medium">{content.outputTitle}</span>
-                </div>
-                {running && (
-                  <span className="flex items-center gap-1.5 text-xs text-primary">
-                    <Loader2 className="w-3 h-3 animate-spin" /> {content.runningLabel}
-                  </span>
-                )}
-              </div>
-              <pre className={`p-4 ${expanded ? "h-[600px]" : "h-[450px]"} overflow-auto font-mono text-sm whitespace-pre-wrap`}>
-                {output ? (
-                  <span className="text-foreground">{output}</span>
-                ) : (
-                  <span className="text-muted-foreground">
-                    {content.emptyOutput}
-                  </span>
-                )}
-              </pre>
-            </div>
+            <ContentBlockImage
+              src={content.sideImage || "/content/code-lab.svg"}
+              alt="Playground preview"
+              aspectRatio={4 / 3}
+              overlayLabel={languageDefaults[selectedLang].title}
+            />
           </div>
 
-          {/* Tips */}
+          {loading && !siteContentData ? (
+            <div className="grid lg:grid-cols-2 gap-4">
+              <div className="rounded-xl border border-border bg-card p-4 space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+              <div className="rounded-xl border border-border bg-card p-4 space-y-2">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-40 w-full" />
+              </div>
+            </div>
+          ) : (
+            <div className="grid lg:grid-cols-2 gap-4">
+              <div className="rounded-xl border border-border overflow-hidden bg-card">
+                <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-border bg-muted/50">
+                  <div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                      <Code className="w-4 h-4" />
+                      <span className="capitalize font-medium">{selectedLang}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{languageDefaults[selectedLang].helper}</p>
+                  </div>
+                  <div className="flex gap-1.5">
+                    <Button variant="ghost" size="sm" onClick={handleCopy} className="h-8">
+                      {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setCode(languageDefaults[selectedLang].code);
+                        setOutput("");
+                      }}
+                      className="h-8"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleRun}
+                      disabled={running}
+                      className="bg-gradient-primary text-primary-foreground hover:opacity-90 h-8 px-4"
+                    >
+                      {running ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Play className="w-4 h-4 mr-1" />}
+                      {content.runLabel}
+                    </Button>
+                  </div>
+                </div>
+
+                <InlineCodeEditor language={selectedLang as "python" | "c" | "sql"} value={code} onChange={setCode} />
+              </div>
+
+              <div className="rounded-xl border border-border overflow-hidden bg-card">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/50">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground font-medium">{content.outputTitle}</span>
+                  </div>
+                  {running ? (
+                    <span className="flex items-center gap-1.5 text-xs text-primary">
+                      <Loader2 className="w-3 h-3 animate-spin" /> {content.runningLabel}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Sparkles className="w-3 h-3" /> AI execution
+                    </span>
+                  )}
+                </div>
+                <pre className="h-[450px] overflow-auto p-4 font-mono text-sm whitespace-pre-wrap leading-6">
+                  {output ? <span className="text-foreground">{output}</span> : <span className="text-muted-foreground">{content.emptyOutput}</span>}
+                </pre>
+              </div>
+            </div>
+          )}
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="mt-8 grid md:grid-cols-3 gap-4"
           >
-            {[
-              { title: "Python", desc: "Full Python support — loops, functions, classes, and more", icon: "🐍" },
-              { title: "C Language", desc: "Write and execute C programs with standard I/O", icon: "⚡" },
-              { title: "SQL", desc: "Run SQL queries — CREATE, INSERT, SELECT, and more", icon: "🗄️" },
-            ].map((tip, i) => (
+            {Object.entries(languageDefaults).map(([lang, tip], i) => (
               <div key={i} className="p-4 rounded-xl bg-gradient-card border border-border">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-lg">{tip.icon}</span>
-                  <h4 className="font-heading font-semibold text-sm">{tip.title}</h4>
+                  <h4 className="font-heading font-semibold text-sm capitalize">{lang}</h4>
                 </div>
-                <p className="text-xs text-muted-foreground">{tip.desc}</p>
+                <p className="text-xs text-muted-foreground">{tip.helper}</p>
               </div>
             ))}
           </motion.div>
