@@ -198,6 +198,14 @@ export const defaultSiteContent: SiteContent = {
       description: "Oops! Page not found",
       linkLabel: "Return to Home",
     },
+    videoLectures: {
+      badge: "Watch & Learn",
+      title: "Video Lectures",
+      description: "Watch tutorial videos and lectures to boost your understanding.",
+      emptyTitle: "No Video Lectures Yet",
+      emptyDescription: "Upload video lecture data to Firebase to see them here.",
+      watchLabel: "Watch Now",
+    },
   },
   contact: {
     badge: "We'd love to hear from you",
