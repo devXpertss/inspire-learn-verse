@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Loader2, BookOpen, Brain, Lock, LogOut, Eye, EyeOff, Presentation,
-  Save, Plus, Trash2, ChevronDown, ChevronRight, Image,
+  Save, Plus, Trash2, ChevronDown, ChevronRight, Image, Video,
 } from "lucide-react";
 import { FloatingShape, GridPattern } from "@/components/FloatingElements";
 
