@@ -15,6 +15,7 @@ import PresentationsPage from "./pages/PresentationsPage";
 import QuizPage from "./pages/QuizPage";
 import AdminPage from "./pages/AdminPage";
 import ContactPage from "./pages/ContactPage";
+import VideoLecturesPage from "./pages/VideoLecturesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
