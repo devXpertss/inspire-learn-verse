@@ -11,6 +11,7 @@ export const defaultSiteContent: SiteContent = {
       { path: "/", label: "Home" },
       { path: "/subjects", label: "Subjects" },
       { path: "/presentations", label: "Presentations" },
+      { path: "/videos", label: "Videos" },
       { path: "/playground", label: "Playground" },
       { path: "/quiz", label: "Quiz" },
       { path: "/contact", label: "Contact" },
