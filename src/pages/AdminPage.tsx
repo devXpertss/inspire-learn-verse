@@ -603,8 +603,85 @@ function QuizBlockEditor() {
   );
 }
 
+/* ── Video Lectures Block Editor ── */
+function VideoBlockEditor() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    const unsub = onValue(ref(db, "videoLectures"), (snap) => { setData(snap.val() || {}); setLoading(false); });
+    return () => unsub();
+  }, []);
+
+  const save = async () => {
+    setSaving(true);
+    try { await set(ref(db, "videoLectures"), data); setMsg("✅ Saved!"); setTimeout(() => setMsg(""), 3000); }
+    catch (e: any) { setMsg(`Error: ${e.message}`); }
+    setSaving(false);
+  };
+
+  const updateField = (path: string[], value: any) => {
+    setData((prev: any) => {
+      const copy = JSON.parse(JSON.stringify(prev));
+      let obj = copy;
+      for (let i = 0; i < path.length - 1; i++) { if (!obj[path[i]]) obj[path[i]] = {}; obj = obj[path[i]]; }
+      obj[path[path.length - 1]] = value;
+      return copy;
+    });
+  };
+
+  const addVideo = () => {
+    const key = prompt("Video key (e.g. 'python-intro'):");
+    if (!key) return;
+    updateField([key], { id: key, title: "New Video Lecture", description: "", category: "General", videoUrl: "", thumbnail: "", duration: "", instructor: "" });
+  };
+
+  if (loading) return <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" />;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">Manage video lectures with thumbnails, URLs, and categories.</p>
+        <div className="flex gap-2">
+          <Button onClick={addVideo} variant="outline" size="sm"><Plus className="w-4 h-4 mr-1" /> Add Video</Button>
+          <Button onClick={save} disabled={saving} className="bg-gradient-primary text-primary-foreground">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />} Save
+          </Button>
+        </div>
+      </div>
+      {msg && <p className={`text-sm ${msg.startsWith("Error") ? "text-destructive" : "text-primary"}`}>{msg}</p>}
+
+      {Object.entries(data || {}).map(([key, vid]: [string, any]) => (
+        <CollapsibleSection key={key} title={`🎬 ${vid.title || key}`}>
+          <div className="flex justify-end">
+            <Button variant="ghost" size="sm" onClick={() => {
+              if (!confirm(`Delete "${key}"?`)) return;
+              setData((prev: any) => { const copy = { ...prev }; delete copy[key]; return copy; });
+            }}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+          </div>
+          <FieldInput label="Title" value={vid.title || ""} onChange={(v) => updateField([key, "title"], v)} />
+          <FieldTextarea label="Description" value={vid.description || ""} onChange={(v) => updateField([key, "description"], v)} />
+          <FieldInput label="Category" value={vid.category || ""} onChange={(v) => updateField([key, "category"], v)} />
+          <FieldInput label="Video URL (embed)" value={vid.videoUrl || ""} onChange={(v) => updateField([key, "videoUrl"], v)} />
+          <FieldInput label="Thumbnail URL" value={vid.thumbnail || ""} onChange={(v) => updateField([key, "thumbnail"], v)} />
+          <FieldInput label="Duration" value={vid.duration || ""} onChange={(v) => updateField([key, "duration"], v)} />
+          <FieldInput label="Instructor" value={vid.instructor || ""} onChange={(v) => updateField([key, "instructor"], v)} />
+          {vid.thumbnail && (
+            <div className="mt-2">
+              <p className="text-xs text-muted-foreground mb-1">Preview:</p>
+              <img src={vid.thumbnail} alt="thumb" className="h-24 rounded-lg object-cover border border-border" />
+            </div>
+          )}
+        </CollapsibleSection>
+      ))}
+    </div>
+  );
+}
+
 /* ── Main Admin Page ── */
-type Section = "siteContent" | "subjects" | "presentations" | "quizzes";
+type Section = "siteContent" | "subjects" | "presentations" | "quizzes" | "videos";
 
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -614,6 +691,7 @@ export default function AdminPage() {
     siteContent: { title: "Site Content", icon: Image },
     subjects: { title: "Subjects", icon: BookOpen },
     presentations: { title: "Presentations", icon: Presentation },
+    videos: { title: "Video Lectures", icon: Video },
     quizzes: { title: "Quizzes", icon: Brain },
   };
 
