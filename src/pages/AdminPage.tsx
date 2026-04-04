@@ -174,20 +174,66 @@ function SiteContentEditor() {
         <FieldInput label="Copyright" value={data.footer?.copyright || ""} onChange={(v) => update(["footer", "copyright"], v)} />
       </CollapsibleSection>
 
-      <CollapsibleSection title="🏠 Home Page">
+      <CollapsibleSection title="🏠 Home Page — Text">
         <FieldInput label="Badge Text" value={data.home?.badge || ""} onChange={(v) => update(["home", "badge"], v)} />
         <FieldInput label="Title Prefix" value={data.home?.titlePrefix || ""} onChange={(v) => update(["home", "titlePrefix"], v)} />
         <FieldInput label="Title Accent" value={data.home?.titleAccent || ""} onChange={(v) => update(["home", "titleAccent"], v)} />
         <FieldTextarea label="Description" value={data.home?.description || ""} onChange={(v) => update(["home", "description"], v)} />
         <FieldInput label="Primary CTA" value={data.home?.primaryCta || ""} onChange={(v) => update(["home", "primaryCta"], v)} />
         <FieldInput label="Secondary CTA" value={data.home?.secondaryCta || ""} onChange={(v) => update(["home", "secondaryCta"], v)} />
+        <FieldInput label="Code Preview Label" value={data.home?.codePreviewLabel || ""} onChange={(v) => update(["home", "codePreviewLabel"], v)} />
+        <FieldTextarea label="Code Preview Code" value={data.home?.codePreviewCode || ""} onChange={(v) => update(["home", "codePreviewCode"], v)} />
         <FieldInput label="Features Title" value={data.home?.featuresTitle || ""} onChange={(v) => update(["home", "featuresTitle"], v)} />
         <FieldInput label="Features Accent" value={data.home?.featuresAccent || ""} onChange={(v) => update(["home", "featuresAccent"], v)} />
         <FieldTextarea label="Features Description" value={data.home?.featuresDescription || ""} onChange={(v) => update(["home", "featuresDescription"], v)} />
         <FieldInput label="Why Title" value={data.home?.whyTitle || ""} onChange={(v) => update(["home", "whyTitle"], v)} />
         <FieldInput label="Why Accent" value={data.home?.whyAccent || ""} onChange={(v) => update(["home", "whyAccent"], v)} />
+        <FieldTextarea label="Why Description" value={data.home?.whyDescription || ""} onChange={(v) => update(["home", "whyDescription"], v)} />
         <FieldInput label="CTA Title" value={data.home?.ctaTitle || ""} onChange={(v) => update(["home", "ctaTitle"], v)} />
         <FieldTextarea label="CTA Description" value={data.home?.ctaDescription || ""} onChange={(v) => update(["home", "ctaDescription"], v)} />
+        <FieldInput label="CTA Primary" value={data.home?.ctaPrimary || ""} onChange={(v) => update(["home", "ctaPrimary"], v)} />
+        <FieldInput label="CTA Secondary" value={data.home?.ctaSecondary || ""} onChange={(v) => update(["home", "ctaSecondary"], v)} />
+        <FieldInput label="Testimonials Title" value={data.home?.testimonialsTitle || ""} onChange={(v) => update(["home", "testimonialsTitle"], v)} />
+        <FieldInput label="Testimonials Accent" value={data.home?.testimonialsAccent || ""} onChange={(v) => update(["home", "testimonialsAccent"], v)} />
+        <FieldInput label="Learning Paths Title" value={data.home?.learningPathsTitle || ""} onChange={(v) => update(["home", "learningPathsTitle"], v)} />
+        <FieldInput label="Learning Paths Accent" value={data.home?.learningPathsAccent || ""} onChange={(v) => update(["home", "learningPathsAccent"], v)} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="🖼️ Home Page — Images">
+        <FieldInput label="Hero Image" value={data.home?.heroImage || ""} onChange={(v) => update(["home", "heroImage"], v)} />
+        <FieldInput label="Why Section Image" value={data.home?.whyImage || ""} onChange={(v) => update(["home", "whyImage"], v)} />
+        <FieldInput label="CTA Section Image" value={data.home?.ctaImage || ""} onChange={(v) => update(["home", "ctaImage"], v)} />
+        <p className="text-xs font-semibold text-muted-foreground mt-4">Learning Path Images</p>
+        {(data.home?.learningPaths || []).map((lp: any, i: number) => (
+          <div key={i} className="p-3 rounded-lg bg-muted/50 space-y-2">
+            <p className="text-xs font-semibold text-primary">{lp.title || `Path ${i + 1}`}</p>
+            <FieldInput label="Title" value={lp.title || ""} onChange={(v) => { const paths = JSON.parse(JSON.stringify(data.home?.learningPaths || [])); paths[i] = { ...paths[i], title: v }; update(["home", "learningPaths"], paths); }} />
+            <FieldInput label="Topics" value={lp.topics || ""} onChange={(v) => { const paths = JSON.parse(JSON.stringify(data.home?.learningPaths || [])); paths[i] = { ...paths[i], topics: v }; update(["home", "learningPaths"], paths); }} />
+            <FieldInput label="Icon (emoji)" value={lp.icon || ""} onChange={(v) => { const paths = JSON.parse(JSON.stringify(data.home?.learningPaths || [])); paths[i] = { ...paths[i], icon: v }; update(["home", "learningPaths"], paths); }} />
+            <FieldInput label="Image URL" value={lp.image || ""} onChange={(v) => { const paths = JSON.parse(JSON.stringify(data.home?.learningPaths || [])); paths[i] = { ...paths[i], image: v }; update(["home", "learningPaths"], paths); }} />
+          </div>
+        ))}
+        <p className="text-xs font-semibold text-muted-foreground mt-4">Feature Card Images</p>
+        {(data.home?.features || []).map((f: any, i: number) => (
+          <div key={i} className="p-3 rounded-lg bg-muted/50 space-y-2">
+            <p className="text-xs font-semibold text-primary">{f.title || `Feature ${i + 1}`}</p>
+            <FieldInput label="Title" value={f.title || ""} onChange={(v) => { const feats = JSON.parse(JSON.stringify(data.home?.features || [])); feats[i] = { ...feats[i], title: v }; update(["home", "features"], feats); }} />
+            <FieldTextarea label="Description" value={f.description || ""} onChange={(v) => { const feats = JSON.parse(JSON.stringify(data.home?.features || [])); feats[i] = { ...feats[i], description: v }; update(["home", "features"], feats); }} />
+            <FieldInput label="Icon" value={f.icon || ""} onChange={(v) => { const feats = JSON.parse(JSON.stringify(data.home?.features || [])); feats[i] = { ...feats[i], icon: v }; update(["home", "features"], feats); }} />
+            <FieldInput label="Image URL" value={f.image || ""} onChange={(v) => { const feats = JSON.parse(JSON.stringify(data.home?.features || [])); feats[i] = { ...feats[i], image: v }; update(["home", "features"], feats); }} />
+          </div>
+        ))}
+        <p className="text-xs font-semibold text-muted-foreground mt-4">Testimonial Images</p>
+        {(data.home?.testimonials || []).map((t: any, i: number) => (
+          <div key={i} className="p-3 rounded-lg bg-muted/50 space-y-2">
+            <p className="text-xs font-semibold text-primary">{t.name || `Testimonial ${i + 1}`}</p>
+            <FieldInput label="Name" value={t.name || ""} onChange={(v) => { const ts = JSON.parse(JSON.stringify(data.home?.testimonials || [])); ts[i] = { ...ts[i], name: v }; update(["home", "testimonials"], ts); }} />
+            <FieldInput label="Role" value={t.role || ""} onChange={(v) => { const ts = JSON.parse(JSON.stringify(data.home?.testimonials || [])); ts[i] = { ...ts[i], role: v }; update(["home", "testimonials"], ts); }} />
+            <FieldTextarea label="Quote" value={t.quote || ""} onChange={(v) => { const ts = JSON.parse(JSON.stringify(data.home?.testimonials || [])); ts[i] = { ...ts[i], quote: v }; update(["home", "testimonials"], ts); }} />
+            <FieldInput label="Avatar (initials)" value={t.avatar || ""} onChange={(v) => { const ts = JSON.parse(JSON.stringify(data.home?.testimonials || [])); ts[i] = { ...ts[i], avatar: v }; update(["home", "testimonials"], ts); }} />
+            <FieldInput label="Image URL" value={t.image || ""} onChange={(v) => { const ts = JSON.parse(JSON.stringify(data.home?.testimonials || [])); ts[i] = { ...ts[i], image: v }; update(["home", "testimonials"], ts); }} />
+          </div>
+        ))}
       </CollapsibleSection>
 
       <CollapsibleSection title="📞 Contact Page">
@@ -195,6 +241,8 @@ function SiteContentEditor() {
         <FieldInput label="Title Prefix" value={data.contact?.titlePrefix || ""} onChange={(v) => update(["contact", "titlePrefix"], v)} />
         <FieldInput label="Title Accent" value={data.contact?.titleAccent || ""} onChange={(v) => update(["contact", "titleAccent"], v)} />
         <FieldTextarea label="Description" value={data.contact?.description || ""} onChange={(v) => update(["contact", "description"], v)} />
+        <FieldInput label="Hero Image" value={data.contact?.heroImage || ""} onChange={(v) => update(["contact", "heroImage"], v)} />
+        <FieldInput label="CTA Image" value={data.contact?.ctaImage || ""} onChange={(v) => update(["contact", "ctaImage"], v)} />
         <FieldInput label="Form Title Prefix" value={data.contact?.formTitlePrefix || ""} onChange={(v) => update(["contact", "formTitlePrefix"], v)} />
         <FieldInput label="Form Title Accent" value={data.contact?.formTitleAccent || ""} onChange={(v) => update(["contact", "formTitleAccent"], v)} />
         <FieldInput label="Submit Label" value={data.contact?.submitLabel || ""} onChange={(v) => update(["contact", "submitLabel"], v)} />
@@ -205,6 +253,7 @@ function SiteContentEditor() {
             <FieldInput label="Label" value={card.label} onChange={(v) => { const cards = [...(data.contact?.infoCards || [])]; cards[i] = { ...cards[i], label: v }; update(["contact", "infoCards"], cards); }} />
             <FieldInput label="Value" value={card.value} onChange={(v) => { const cards = [...(data.contact?.infoCards || [])]; cards[i] = { ...cards[i], value: v }; update(["contact", "infoCards"], cards); }} />
             <FieldInput label="Link (href)" value={card.href} onChange={(v) => { const cards = [...(data.contact?.infoCards || [])]; cards[i] = { ...cards[i], href: v }; update(["contact", "infoCards"], cards); }} />
+            <FieldInput label="Image URL" value={card.image || ""} onChange={(v) => { const cards = [...(data.contact?.infoCards || [])]; cards[i] = { ...cards[i], image: v }; update(["contact", "infoCards"], cards); }} />
           </div>
         ))}
         {(data.contact?.socials || []).map((s: any, i: number) => (
@@ -213,6 +262,7 @@ function SiteContentEditor() {
             <FieldInput label="Label" value={s.label} onChange={(v) => { const socials = [...(data.contact?.socials || [])]; socials[i] = { ...socials[i], label: v }; update(["contact", "socials"], socials); }} />
             <FieldInput label="Handle" value={s.handle} onChange={(v) => { const socials = [...(data.contact?.socials || [])]; socials[i] = { ...socials[i], handle: v }; update(["contact", "socials"], socials); }} />
             <FieldInput label="URL" value={s.href} onChange={(v) => { const socials = [...(data.contact?.socials || [])]; socials[i] = { ...socials[i], href: v }; update(["contact", "socials"], socials); }} />
+            <FieldInput label="Image URL" value={s.image || ""} onChange={(v) => { const socials = [...(data.contact?.socials || [])]; socials[i] = { ...socials[i], image: v }; update(["contact", "socials"], socials); }} />
           </div>
         ))}
       </CollapsibleSection>
