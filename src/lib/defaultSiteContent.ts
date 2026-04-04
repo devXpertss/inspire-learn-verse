@@ -11,6 +11,7 @@ export const defaultSiteContent: SiteContent = {
       { path: "/", label: "Home" },
       { path: "/subjects", label: "Subjects" },
       { path: "/presentations", label: "Presentations" },
+      { path: "/videos", label: "Videos" },
       { path: "/playground", label: "Playground" },
       { path: "/quiz", label: "Quiz" },
       { path: "/contact", label: "Contact" },
@@ -196,6 +197,14 @@ export const defaultSiteContent: SiteContent = {
       title: "404",
       description: "Oops! Page not found",
       linkLabel: "Return to Home",
+    },
+    videoLectures: {
+      badge: "Watch & Learn",
+      title: "Video Lectures",
+      description: "Watch tutorial videos and lectures to boost your understanding.",
+      emptyTitle: "No Video Lectures Yet",
+      emptyDescription: "Upload video lecture data to Firebase to see them here.",
+      watchLabel: "Watch Now",
     },
   },
   contact: {

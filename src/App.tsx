@@ -15,6 +15,7 @@ import PresentationsPage from "./pages/PresentationsPage";
 import QuizPage from "./pages/QuizPage";
 import AdminPage from "./pages/AdminPage";
 import ContactPage from "./pages/ContactPage";
+import VideoLecturesPage from "./pages/VideoLecturesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/presentations" element={<PresentationsPage />} />
             <Route path="/quiz" element={<QuizPage />} />
+            <Route path="/videos" element={<VideoLecturesPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="*" element={<NotFound />} />
