@@ -84,6 +84,7 @@ export interface SiteContent {
     learnLinks: Array<{ label: string; path: string }>;
     connectLinks: Array<{ label: string; path: string; external?: boolean }>;
     resourceLinks: Array<{ label: string; path: string; external?: boolean }>;
+    ctaButton?: { label: string; url: string; show: boolean };
   };
   home: Record<string, any>;
   pages: Record<string, any>;

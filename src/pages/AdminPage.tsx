@@ -172,6 +172,15 @@ function SiteContentEditor() {
       <CollapsibleSection title="📄 Footer">
         <FieldTextarea label="Footer Description" value={data.footer?.description || ""} onChange={(v) => update(["footer", "description"], v)} />
         <FieldInput label="Copyright" value={data.footer?.copyright || ""} onChange={(v) => update(["footer", "copyright"], v)} />
+        <p className="text-xs font-semibold text-muted-foreground mt-4">CTA Link Button</p>
+        <FieldInput label="Button Label" value={data.footer?.ctaButton?.label || ""} onChange={(v) => {
+          const btn = { ...(data.footer?.ctaButton || { label: "", url: "", show: true }), label: v };
+          update(["footer", "ctaButton"], btn);
+        }} />
+        <FieldInput label="Button URL" value={data.footer?.ctaButton?.url || ""} onChange={(v) => {
+          const btn = { ...(data.footer?.ctaButton || { label: "", url: "", show: true }), url: v };
+          update(["footer", "ctaButton"], btn);
+        }} />
       </CollapsibleSection>
 
       <CollapsibleSection title="🏠 Home Page — Text">

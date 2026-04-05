@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Play, Video, X, ExternalLink } from "lucide-react";
+import { Play, Pause, Video, X, ExternalLink, SkipBack, SkipForward, Maximize, Minimize, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingShape, GridPattern } from "@/components/FloatingElements";
 import { ContentBlockImage } from "@/components/ContentBlockImage";
@@ -20,6 +20,130 @@ interface VideoLecture {
   videoUrl: string;
   duration?: string;
   instructor?: string;
+}
+
+/* ── Custom Video Player ── */
+function VideoPlayer({ video, onClose }: { video: VideoLecture; onClose: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [playing, setPlaying] = useState(true);
+  const [muted, setMuted] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState("0:00");
+  const [totalDuration, setTotalDuration] = useState("0:00");
+
+  const isEmbed = video.videoUrl?.includes("youtube") || video.videoUrl?.includes("vimeo") || video.videoUrl?.includes("drive.google");
+
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
+
+  const togglePlay = useCallback(() => {
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) { videoRef.current.play(); setPlaying(true); }
+    else { videoRef.current.pause(); setPlaying(false); }
+  }, []);
+
+  const skip = useCallback((seconds: number) => {
+    if (!videoRef.current) return;
+    videoRef.current.currentTime += seconds;
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!containerRef.current) return;
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+    } else {
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  const onTimeUpdate = () => {
+    if (!videoRef.current) return;
+    const v = videoRef.current;
+    setProgress((v.currentTime / v.duration) * 100 || 0);
+    setCurrentTime(formatTime(v.currentTime));
+  };
+
+  const onLoadedMetadata = () => {
+    if (!videoRef.current) return;
+    setTotalDuration(formatTime(videoRef.current.duration));
+  };
+
+  const seekTo = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!videoRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    videoRef.current.currentTime = pct * videoRef.current.duration;
+  };
+
+  return (
+    <div ref={containerRef} className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col">
+      <div className="flex items-center justify-between p-3 border-b border-border shrink-0">
+        <div className="min-w-0">
+          <h2 className="text-base font-bold font-heading truncate">{video.title}</h2>
+          {video.instructor && <p className="text-xs text-muted-foreground">🎓 {video.instructor}</p>}
+        </div>
+        <Button variant="ghost" size="sm" onClick={onClose}><X className="w-5 h-5" /></Button>
+      </div>
+
+      <div className="flex-1 flex items-center justify-center p-2 sm:p-4 overflow-hidden">
+        {isEmbed ? (
+          <iframe
+            src={video.videoUrl}
+            title={video.title}
+            className="w-full max-w-5xl aspect-video rounded-xl border border-border"
+            allowFullScreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src={video.videoUrl}
+            className="w-full max-w-5xl max-h-full rounded-xl"
+            autoPlay
+            onTimeUpdate={onTimeUpdate}
+            onLoadedMetadata={onLoadedMetadata}
+            muted={muted}
+            onClick={togglePlay}
+          />
+        )}
+      </div>
+
+      {!isEmbed && (
+        <div className="shrink-0 border-t border-border bg-card p-3 space-y-2">
+          <div className="cursor-pointer h-2 rounded-full bg-muted overflow-hidden" onClick={seekTo}>
+            <div className="h-full bg-gradient-primary rounded-full transition-all" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono text-muted-foreground">{currentTime} / {totalDuration}</span>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" onClick={() => skip(-10)}><SkipBack className="w-4 h-4" /></Button>
+              <Button variant="ghost" size="sm" onClick={togglePlay}>
+                {playing ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => skip(10)}><SkipForward className="w-4 h-4" /></Button>
+              <Button variant="ghost" size="sm" onClick={() => setMuted(!muted)}>
+                {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={toggleFullscreen}>
+                {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function VideoLecturesPage() {
@@ -101,11 +225,7 @@ export default function VideoLecturesPage() {
                           className="group overflow-hidden rounded-2xl border border-border bg-gradient-card shadow-card transition-all duration-300 hover:shadow-glow"
                         >
                           <div className="relative cursor-pointer" onClick={() => setActiveVideo(video)}>
-                            <ContentBlockImage
-                              src={video.thumbnail}
-                              alt={video.title}
-                              aspectRatio={16 / 9}
-                            />
+                            <ContentBlockImage src={video.thumbnail} alt={video.title} aspectRatio={16 / 9} />
                             <div className="absolute inset-0 flex items-center justify-center bg-background/30 opacity-0 group-hover:opacity-100 transition-opacity">
                               <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
                                 <Play className="w-8 h-8 text-primary-foreground ml-1" />
@@ -132,11 +252,7 @@ export default function VideoLecturesPage() {
                                 <Play className="w-4 h-4 mr-1" /> {pageContent.watchLabel}
                               </Button>
                               {video.videoUrl && (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  asChild
-                                >
+                                <Button size="sm" variant="outline" asChild>
                                   <a href={video.videoUrl} target="_blank" rel="noopener noreferrer">
                                     <ExternalLink className="w-4 h-4" />
                                   </a>
@@ -154,35 +270,7 @@ export default function VideoLecturesPage() {
         </div>
       </section>
 
-      {/* Fullscreen Video Player */}
-      {activeVideo && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <div>
-              <h2 className="text-lg font-bold font-heading">{activeVideo.title}</h2>
-              {activeVideo.instructor && (
-                <p className="text-sm text-muted-foreground">🎓 {activeVideo.instructor}</p>
-              )}
-            </div>
-            <Button variant="ghost" size="sm" onClick={() => setActiveVideo(null)}>
-              <X className="w-5 h-5" />
-            </Button>
-          </div>
-          <div className="flex-1 flex items-center justify-center p-4">
-            {activeVideo.videoUrl ? (
-              <iframe
-                src={activeVideo.videoUrl}
-                title={activeVideo.title}
-                className="w-full max-w-5xl aspect-video rounded-xl border border-border"
-                allowFullScreen
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              />
-            ) : (
-              <p className="text-muted-foreground">No video URL provided for this lecture.</p>
-            )}
-          </div>
-        </div>
-      )}
+      {activeVideo && <VideoPlayer video={activeVideo} onClose={() => setActiveVideo(null)} />}
 
       <SiteFooter />
     </div>
