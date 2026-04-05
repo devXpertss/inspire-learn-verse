@@ -161,7 +161,7 @@ export function SearchBar() {
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              className="fixed top-[15%] left-1/2 -translate-x-1/2 z-[101] w-full max-w-lg"
+              className="fixed top-[15%] left-1/2 -translate-x-1/2 z-[101] w-[calc(100%-2rem)] max-w-lg"
             >
               <div className="rounded-2xl border border-border bg-card shadow-2xl shadow-primary/10 overflow-hidden">
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-border">

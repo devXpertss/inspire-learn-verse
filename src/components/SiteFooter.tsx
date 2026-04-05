@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useSiteContent } from "@/hooks/useFirebase";
 import { defaultSiteContent } from "@/lib/defaultSiteContent";
 
@@ -7,6 +9,7 @@ export function SiteFooter() {
   const siteContent = siteContentData ?? defaultSiteContent;
   const brand = siteContent?.brand ?? defaultSiteContent.brand;
   const footer = siteContent?.footer ?? defaultSiteContent.footer;
+  const ctaButton = (footer as any).ctaButton ?? { label: "Visit Us", url: "https://codespire.dev", show: true };
 
   const renderLink = (item: { label: string; path: string; external?: boolean }) => {
     if (item.external || item.path.startsWith("http")) {
@@ -33,7 +36,15 @@ export function SiteFooter() {
               <img src={brand.logoUrl} alt={brand.logoAlt} className="w-8 h-8 rounded-lg object-cover" loading="lazy" />
               <span className="font-heading text-xl font-bold text-gradient">{brand.name}</span>
             </div>
-            <p className="text-sm text-muted-foreground">{footer.description}</p>
+            <p className="text-sm text-muted-foreground mb-4">{footer.description}</p>
+            {ctaButton.show !== false && ctaButton.url && (
+              <Button asChild size="sm" className="bg-gradient-primary text-primary-foreground hover:opacity-90">
+                <a href={ctaButton.url} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-3.5 h-3.5 mr-2" />
+                  {ctaButton.label || "Visit Us"}
+                </a>
+              </Button>
+            )}
           </div>
           <div>
             <h4 className="font-heading font-semibold mb-3">Learn</h4>

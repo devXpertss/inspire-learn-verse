@@ -37,6 +37,11 @@ export const defaultSiteContent: SiteContent = {
       { label: "Admin", path: "/admin" },
       { label: "Firebase JSON", path: "/admin" },
     ],
+    ctaButton: {
+      label: "Visit Us",
+      url: "https://codespire.dev",
+      show: true,
+    },
   },
   home: {
     badge: "Your Ultimate Study Companion",
