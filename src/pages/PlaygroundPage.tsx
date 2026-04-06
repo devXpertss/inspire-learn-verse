@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { FloatingShape, GridPattern } from "@/components/FloatingElements";
 import { Skeleton } from "@/components/ui/skeleton";
 import { runPlaygroundCode } from "@/lib/playgroundRuntime";
-import { useSiteContent } from "@/hooks/useFirebase";
+import { useSiteContent, useFirebaseData } from "@/hooks/useFirebase";
 import { defaultSiteContent } from "@/lib/defaultSiteContent";
 import { InlineCodeEditor } from "@/components/playground/InlineCodeEditor";
 import { ContentBlockImage } from "@/components/ContentBlockImage";
