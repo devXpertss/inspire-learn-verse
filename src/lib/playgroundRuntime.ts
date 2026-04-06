@@ -1,6 +1,5 @@
 /* AI-powered code execution via Groq API */
 
-const GROQ_API_KEY = "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";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const systemPrompts: Record<string, string> = {
@@ -9,15 +8,17 @@ const systemPrompts: Record<string, string> = {
   sql: "You are a SQLite terminal. The user will provide SQL queries. You must ONLY return the exact output of those queries as if they ran in a real SQLite database. Format table output with column headers and aligned rows. Do not explain anything. If there is an error, return the error message exactly as SQLite would show it. Do not add any extra text, markdown, or formatting.",
 };
 
-export async function runPlaygroundCode(language: string, code: string): Promise<string> {
+export async function runPlaygroundCode(language: string, code: string, apiKey?: string): Promise<string> {
   const systemContent = systemPrompts[language];
   if (!systemContent) return "Unsupported language.";
+
+  if (!apiKey) return "Error: No API key configured. Please set the playground API key from the Admin Panel.";
 
   try {
     const response = await fetch(GROQ_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${GROQ_API_KEY}`,
+        "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
