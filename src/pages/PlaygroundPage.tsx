@@ -72,6 +72,7 @@ export default function PlaygroundPage() {
   const [running, setRunning] = useState(false);
   const [copied, setCopied] = useState(false);
   const { data: siteContentData, loading } = useSiteContent();
+  const { data: apiKeyData } = useFirebaseData<string>("config/playgroundApiKey");
   const content = (siteContentData ?? defaultSiteContent).pages.playground;
 
   const languageDefaults = useMemo(() => {
