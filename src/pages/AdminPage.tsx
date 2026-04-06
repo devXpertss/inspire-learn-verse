@@ -784,6 +784,7 @@ export default function AdminPage() {
           {section === "presentations" && <PresentationBlockEditor />}
           {section === "quizzes" && <QuizBlockEditor />}
           {section === "videos" && <VideoBlockEditor />}
+          {section === "config" && <ConfigEditor />}
         </div>
       </div>
     </div>
