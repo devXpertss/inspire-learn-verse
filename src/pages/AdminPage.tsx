@@ -689,8 +689,45 @@ function VideoBlockEditor() {
   );
 }
 
+/* ── Config Editor (API keys etc.) ── */
+function ConfigEditor() {
+  const [apiKey, setApiKey] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const dbRef = ref(db, "config/playgroundApiKey");
+    return onValue(dbRef, (snap) => {
+      if (snap.val()) setApiKey(snap.val());
+    });
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await set(ref(db, "config/playgroundApiKey"), apiKey);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-heading font-semibold">⚙️ Configuration</h3>
+      <div className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border">
+        <h4 className="text-sm font-semibold">Playground API Key (Groq)</h4>
+        <p className="text-xs text-muted-foreground">This key is used by the code playground to execute Python, C, and SQL code via AI.</p>
+        <Input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="gsk_..." />
+        <Button onClick={handleSave} disabled={saving} className="bg-gradient-primary text-primary-foreground hover:opacity-90 gap-2">
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          {saved ? "Saved ✓" : "Save API Key"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 /* ── Main Admin Page ── */
-type Section = "siteContent" | "subjects" | "presentations" | "quizzes" | "videos";
+type Section = "siteContent" | "subjects" | "presentations" | "quizzes" | "videos" | "config";
 
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -702,6 +739,7 @@ export default function AdminPage() {
     presentations: { title: "Presentations", icon: Presentation },
     videos: { title: "Video Lectures", icon: Video },
     quizzes: { title: "Quizzes", icon: Brain },
+    config: { title: "Config", icon: Settings },
   };
 
   if (!authenticated) {
