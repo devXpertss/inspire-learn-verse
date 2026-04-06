@@ -1,6 +1,6 @@
 /* AI-powered code execution via Groq API */
 
-const GROQ_API_KEY = "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";
+const GROQ_API_KEY = "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";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const systemPrompts: Record<string, string> = {
