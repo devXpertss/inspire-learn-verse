@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { FloatingShape, GridPattern } from "@/components/FloatingElements";
 import { Skeleton } from "@/components/ui/skeleton";
 import { runPlaygroundCode } from "@/lib/playgroundRuntime";
-import { useSiteContent } from "@/hooks/useFirebase";
+import { useSiteContent, useFirebaseData } from "@/hooks/useFirebase";
 import { defaultSiteContent } from "@/lib/defaultSiteContent";
 import { InlineCodeEditor } from "@/components/playground/InlineCodeEditor";
 import { ContentBlockImage } from "@/components/ContentBlockImage";
@@ -72,6 +72,7 @@ export default function PlaygroundPage() {
   const [running, setRunning] = useState(false);
   const [copied, setCopied] = useState(false);
   const { data: siteContentData, loading } = useSiteContent();
+  const { data: apiKeyData } = useFirebaseData<string>("config/playgroundApiKey");
   const content = (siteContentData ?? defaultSiteContent).pages.playground;
 
   const languageDefaults = useMemo(() => {
@@ -94,7 +95,7 @@ export default function PlaygroundPage() {
     setRunning(true);
     setOutput(content.runningOutput || "Executing your code...");
     try {
-      const result = await runPlaygroundCode(selectedLang, code);
+      const result = await runPlaygroundCode(selectedLang, code, apiKeyData || undefined);
       setOutput(result);
     } catch (err: any) {
       setOutput(`Error: ${err.message || content.executionError || "Execution failed."}`);
