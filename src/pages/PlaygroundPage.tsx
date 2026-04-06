@@ -95,7 +95,7 @@ export default function PlaygroundPage() {
     setRunning(true);
     setOutput(content.runningOutput || "Executing your code...");
     try {
-      const result = await runPlaygroundCode(selectedLang, code);
+      const result = await runPlaygroundCode(selectedLang, code, apiKeyData || undefined);
       setOutput(result);
     } catch (err: any) {
       setOutput(`Error: ${err.message || content.executionError || "Execution failed."}`);
