@@ -33,7 +33,19 @@ function VideoPlayer({ video, onClose }: { video: VideoLecture; onClose: () => v
   const [currentTime, setCurrentTime] = useState("0:00");
   const [totalDuration, setTotalDuration] = useState("0:00");
 
-  const isEmbed = video.videoUrl?.includes("youtube") || video.videoUrl?.includes("vimeo") || video.videoUrl?.includes("drive.google");
+  const getEmbedUrl = (url: string) => {
+    if (!url) return url;
+    // Convert YouTube watch URLs to embed URLs
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+    // Convert Vimeo URLs
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+    return url;
+  };
+
+  const isEmbed = video.videoUrl?.includes("youtube") || video.videoUrl?.includes("youtu.be") || video.videoUrl?.includes("vimeo") || video.videoUrl?.includes("drive.google");
+  const embedUrl = isEmbed ? getEmbedUrl(video.videoUrl) : video.videoUrl;
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -99,7 +111,7 @@ function VideoPlayer({ video, onClose }: { video: VideoLecture; onClose: () => v
       <div className="flex-1 flex items-center justify-center p-2 sm:p-4 overflow-hidden">
         {isEmbed ? (
           <iframe
-            src={video.videoUrl}
+            src={embedUrl}
             title={video.title}
             className="w-full max-w-5xl aspect-video rounded-xl border border-border"
             allowFullScreen
