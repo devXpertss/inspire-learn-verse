@@ -21,7 +21,7 @@ export async function runPlaygroundCode(language: string, code: string): Promise
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b",
         messages: [
           { role: "system", content: systemContent },
           { role: "user", content: code },
