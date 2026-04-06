@@ -111,7 +111,7 @@ function VideoPlayer({ video, onClose }: { video: VideoLecture; onClose: () => v
       <div className="flex-1 flex items-center justify-center p-2 sm:p-4 overflow-hidden">
         {isEmbed ? (
           <iframe
-            src={video.videoUrl}
+            src={embedUrl}
             title={video.title}
             className="w-full max-w-5xl aspect-video rounded-xl border border-border"
             allowFullScreen
